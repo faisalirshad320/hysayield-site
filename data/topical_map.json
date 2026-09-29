@@ -1,0 +1,519 @@
+{
+ "method": "Keyword Insights-style: keywords grouped by shared SERP intent into pages, pages grouped by semantic parent topic; LowFruits-style weak-site filter applied to every new page (see data/lowfruits.json). Volumes: Ahrefs US, 2026-09-29.",
+ "parents": [
+  {
+   "topic": "Savings interest calculators (utility)",
+   "pages": [
+    {
+     "page": "/",
+     "label": "HYSA calculator",
+     "tier": "pillar",
+     "intent": "utility",
+     "cluster_volume": 48810,
+     "keywords": [
+      "hysa calculator",
+      "savings account interest calculator",
+      "simple savings calculator",
+      "apy calculator savings",
+      "apy calculator monthly",
+      "monthly savings calculator",
+      "high-yield savings account calculator",
+      "interest calculator savings account",
+      "calculating interest on savings account",
+      "calculator high yield savings",
+      "how to calculate interest for savings account"
+     ]
+    },
+    {
+     "page": "/calculators/",
+     "label": "All calculators",
+     "tier": "pillar",
+     "intent": "utility",
+     "cluster_volume": 0,
+     "keywords": [
+      "savings calculators"
+     ]
+    },
+    {
+     "page": "/calculators/how-much-to-earn/",
+     "label": "How much do I need to earn $1,000 a month",
+     "tier": "supporting",
+     "intent": "utility",
+     "cluster_volume": 0,
+     "keywords": [
+      "how much do i need in a hysa to make $1000 a month",
+      "how much interest does $100,000 earn"
+     ]
+    },
+    {
+     "page": "/calculators/savings-goal/",
+     "label": "Savings goal",
+     "tier": "supporting",
+     "intent": "utility",
+     "cluster_volume": 0,
+     "keywords": [
+      "savings goal calculator",
+      "how long to save"
+     ]
+    },
+    {
+     "page": "/calculators/withdrawal/",
+     "label": "Withdrawal calculator",
+     "tier": "supporting",
+     "intent": "utility",
+     "cluster_volume": 3700,
+     "keywords": [
+      "savings withdrawal calculator",
+      "savings calculator with withdrawals",
+      "how long will savings last calculator"
+     ]
+    },
+    {
+     "page": "/calculators/simple-interest/",
+     "label": "Simple interest calculator",
+     "tier": "tier1",
+     "intent": "utility",
+     "cluster_volume": 24000,
+     "keywords": [
+      "simple interest calculator"
+     ]
+    },
+    {
+     "page": "/calculators/emergency-fund/",
+     "label": "Emergency fund calculator",
+     "tier": "tier1",
+     "intent": "utility",
+     "cluster_volume": 8500,
+     "keywords": [
+      "emergency fund calculator",
+      "emergency fund amount",
+      "how much emergency fund",
+      "building an emergency fund",
+      "what is a emergency fund",
+      "how much is a good emergency fund",
+      "6 month emergency fund calculator",
+      "using heloc as emergency fund",
+      "emergency fund for rental property",
+      "saving for emergency fund",
+      "creating an emergency fund",
+      "whats a good emergency fund amount",
+      "roth ira emergency fund",
+      "emergency fund ratio calculator"
+     ]
+    }
+   ],
+   "volume": 85010
+  },
+  {
+   "topic": "APY concept (informational)",
+   "pages": [
+    {
+     "page": "/learn/what-is-apy/",
+     "label": "What is APY",
+     "tier": "pillar",
+     "intent": "informational",
+     "cluster_volume": 102000,
+     "keywords": [
+      "what is apy",
+      "apy",
+      "what does apy mean",
+      "what does apy stand for",
+      "what is apy in banking",
+      "apy definition",
+      "whats apy",
+      "what is apy savings account",
+      "what is the difference between apy and dividend rate"
+     ]
+    },
+    {
+     "page": "/learn/apy-formula/",
+     "label": "The APY formula",
+     "tier": "supporting",
+     "intent": "informational",
+     "cluster_volume": 2700,
+     "keywords": [
+      "apy formula"
+     ]
+    },
+    {
+     "page": "/learn/apy-vs-interest-rate/",
+     "label": "APY vs interest rate",
+     "tier": "supporting",
+     "intent": "informational",
+     "cluster_volume": 13600,
+     "keywords": [
+      "apy vs interest rate",
+      "interest rate vs apy"
+     ]
+    },
+    {
+     "page": "/learn/apr-vs-apy/",
+     "label": "APR vs APY",
+     "tier": "supporting",
+     "intent": "informational",
+     "cluster_volume": 15400,
+     "keywords": [
+      "apr vs apy",
+      "apy vs apr"
+     ]
+    },
+    {
+     "page": "/calculators/apy-converter/",
+     "label": "APY and interest rate converter",
+     "tier": "supporting",
+     "intent": "utility",
+     "cluster_volume": 1600,
+     "keywords": [
+      "apy to interest rate converter",
+      "nominal rate to apy",
+      "effective interest rate calculator",
+      "daily to annual interest rate calculator",
+      "interest yield calculator"
+     ]
+    },
+    {
+     "page": "/learn/how-hysa-compounding-works/",
+     "label": "How compounding works",
+     "tier": "supporting",
+     "intent": "informational",
+     "cluster_volume": 3600,
+     "keywords": [
+      "compound interest savings account"
+     ]
+    }
+   ],
+   "volume": 138900
+  },
+  {
+   "topic": "High-yield savings accounts (informational)",
+   "pages": [
+    {
+     "page": "/learn/what-is-a-hysa/",
+     "label": "What is a high-yield savings account",
+     "tier": "pillar",
+     "intent": "informational",
+     "cluster_volume": 32150,
+     "keywords": [
+      "what is a high yield savings account",
+      "how does a high yield savings account work",
+      "how do high yield savings accounts work",
+      "what is high yield savings account",
+      "what is hysa",
+      "high yield savings account meaning",
+      "how does a high yield savings work",
+      "what is a hysa savings account",
+      "how do high interest savings accounts work"
+     ]
+    },
+    {
+     "page": "/learn/hysa-pros-and-cons/",
+     "label": "HYSA pros and cons",
+     "tier": "tier2",
+     "intent": "informational",
+     "cluster_volume": 1100,
+     "keywords": [
+      "disadvantages of high-yield savings account",
+      "pros and cons of high yield savings accounts",
+      "high yield savings account risks"
+     ]
+    },
+    {
+     "page": "/learn/can-you-withdraw-from-a-hysa/",
+     "label": "Can you withdraw from a HYSA?",
+     "tier": "tier2",
+     "intent": "informational",
+     "cluster_volume": 930,
+     "keywords": [
+      "can you withdraw from a high yield savings account",
+      "can you take money out of high yield savings account",
+      "can you withdraw money from a high yield savings account",
+      "can you withdraw from high yield savings account",
+      "can you withdraw from hysa",
+      "can i withdraw from a high yield savings account",
+      "can you withdraw money from high yield savings account",
+      "can you take money out of a hysa",
+      "high yield savings account can you withdraw money",
+      "can you withdraw from a hysa"
+     ]
+    },
+    {
+     "page": "/learn/how-much-to-keep-in-a-hysa/",
+     "label": "How much to keep in a HYSA",
+     "tier": "tier2",
+     "intent": "informational",
+     "cluster_volume": 250,
+     "keywords": [
+      "how much to keep in hysa",
+      "how many high yield savings accounts should i have"
+     ]
+    },
+    {
+     "page": "/learn/hysa-interest-tax/",
+     "label": "Tax on savings interest",
+     "tier": "supporting",
+     "intent": "informational",
+     "cluster_volume": 0,
+     "keywords": [
+      "is hysa interest taxable",
+      "do you pay taxes on high yield savings"
+     ]
+    },
+    {
+     "page": "/learn/checking-vs-savings/",
+     "label": "Checking vs savings",
+     "tier": "tier2",
+     "intent": "informational",
+     "cluster_volume": 3000,
+     "keywords": [
+      "what are the main differences between a checking and savings account?",
+      "what is a traditional savings account",
+      "what's the difference between a savings and checking account",
+      "what is a checking vs savings account"
+     ]
+    }
+   ],
+   "volume": 37430
+  },
+  {
+   "topic": "Product comparisons (commercial investigation)",
+   "pages": [
+    {
+     "page": "/learn/hysa-vs-money-market/",
+     "label": "HYSA vs money market",
+     "tier": "supporting",
+     "intent": "commercial investigation",
+     "cluster_volume": 9090,
+     "keywords": [
+      "money market vs high yield savings",
+      "money market account vs high yield savings",
+      "hysa vs money market",
+      "money market account vs high yield savings account",
+      "money market vs hysa",
+      "mma vs high yield savings"
+     ]
+    },
+    {
+     "page": "/learn/how-money-market-accounts-work/",
+     "label": "How money market accounts work",
+     "tier": "tier2",
+     "intent": "informational",
+     "cluster_volume": 15300,
+     "keywords": [
+      "how does a money market account work",
+      "money market account typical interest rate",
+      "how do money market accounts work",
+      "typical interest rate for money market account",
+      "typical interest rate of a money market account",
+      "money market account fees",
+      "money market checking",
+      "what is a high yield money market account",
+      "interest on money market"
+     ]
+    },
+    {
+     "page": "/learn/hysa-vs-investing/",
+     "label": "HYSA vs investing",
+     "tier": "tier2",
+     "intent": "commercial investigation",
+     "cluster_volume": 620,
+     "keywords": [
+      "hysa vs brokerage account",
+      "brokerage account vs high yield savings",
+      "roth ira vs high yield savings account",
+      "money market fund vs hysa",
+      "high yield savings account vs 401k",
+      "high yield savings account vs brokerage account"
+     ]
+    },
+    {
+     "page": "/calculators/cd-vs-hysa/",
+     "label": "CD vs HYSA",
+     "tier": "supporting",
+     "intent": "commercial investigation",
+     "cluster_volume": 4800,
+     "keywords": [
+      "cd vs hysa",
+      "cd vs high yield savings"
+     ]
+    }
+   ],
+   "volume": 29810
+  },
+  {
+   "topic": "Certificates of deposit (utility)",
+   "pages": [
+    {
+     "page": "/calculators/cd-calculator/",
+     "label": "CD calculator",
+     "tier": "tier1",
+     "intent": "utility",
+     "cluster_volume": 19350,
+     "keywords": [
+      "cd rates calculator",
+      "cd account calculator",
+      "cd calculator apy",
+      "free cd calculator",
+      "cd compound interest calculator",
+      "3 month cd calculator",
+      "bank cd calculator",
+      "cd yield calculator",
+      "how to calculate cd rates",
+      "calculator for cd rates",
+      "saving cd calculator",
+      "cd calculator compounded quarterly",
+      "cd returns calculator"
+     ]
+    },
+    {
+     "page": "/calculators/cd-ladder/",
+     "label": "CD ladder calculator",
+     "tier": "tier3",
+     "intent": "utility",
+     "cluster_volume": 870,
+     "keywords": [
+      "how to cd ladder",
+      "create a cd ladder",
+      "build a cd ladder",
+      "how to set up a cd ladder",
+      "what is a cd ladder strategy",
+      "short term cd ladder"
+     ]
+    }
+   ],
+   "volume": 20220
+  },
+  {
+   "topic": "Rates data (informational, linkable)",
+   "pages": [
+    {
+     "page": "/rates/",
+     "label": "Savings rates chart",
+     "tier": "tier2",
+     "intent": "informational + linkable asset",
+     "cluster_volume": 2250,
+     "keywords": [
+      "savings account interest rates chart",
+      "what is the average interest rate on a savings account",
+      "current interest rates on savings accounts",
+      "current savings account interest rate"
+     ]
+    }
+   ],
+   "volume": 2250
+  },
+  {
+   "topic": "Worked examples (PAA long tail)",
+   "pages": [
+    {
+     "page": "/answers/",
+     "label": "Worked examples",
+     "tier": "pillar",
+     "intent": "informational",
+     "cluster_volume": 0,
+     "keywords": [
+      "how much interest will my savings earn"
+     ]
+    },
+    {
+     "page": "/answers/1000/",
+     "label": "/answers/1000/",
+     "tier": "supporting",
+     "intent": "informational",
+     "cluster_volume": 0,
+     "keywords": []
+    },
+    {
+     "page": "/answers/5000/",
+     "label": "/answers/5000/",
+     "tier": "supporting",
+     "intent": "informational",
+     "cluster_volume": 0,
+     "keywords": []
+    },
+    {
+     "page": "/answers/10000/",
+     "label": "/answers/10000/",
+     "tier": "supporting",
+     "intent": "informational",
+     "cluster_volume": 0,
+     "keywords": []
+    },
+    {
+     "page": "/answers/25000/",
+     "label": "/answers/25000/",
+     "tier": "supporting",
+     "intent": "informational",
+     "cluster_volume": 0,
+     "keywords": []
+    },
+    {
+     "page": "/answers/50000/",
+     "label": "/answers/50000/",
+     "tier": "supporting",
+     "intent": "informational",
+     "cluster_volume": 0,
+     "keywords": []
+    },
+    {
+     "page": "/answers/100000/",
+     "label": "/answers/100000/",
+     "tier": "supporting",
+     "intent": "informational",
+     "cluster_volume": 0,
+     "keywords": []
+    },
+    {
+     "page": "/answers/250000/",
+     "label": "/answers/250000/",
+     "tier": "supporting",
+     "intent": "informational",
+     "cluster_volume": 0,
+     "keywords": []
+    }
+   ],
+   "volume": 0
+  },
+  {
+   "topic": "Reference",
+   "pages": [
+    {
+     "page": "/glossary/",
+     "label": "Glossary",
+     "tier": "supporting",
+     "intent": "informational",
+     "cluster_volume": 0,
+     "keywords": [
+      "savings and apy terms"
+     ]
+    },
+    {
+     "page": "/methodology/",
+     "label": "Methodology",
+     "tier": "supporting",
+     "intent": "informational",
+     "cluster_volume": 0,
+     "keywords": [
+      "how this calculator works"
+     ]
+    },
+    {
+     "page": "/learn/",
+     "label": "All guides",
+     "tier": "supporting",
+     "intent": "informational",
+     "cluster_volume": 0,
+     "keywords": []
+    }
+   ],
+   "volume": 0
+  }
+ ],
+ "total_mapped_volume": 313620,
+ "pillars": [
+  "/",
+  "/learn/what-is-apy/",
+  "/learn/what-is-a-hysa/",
+  "/calculators/",
+  "/answers/"
+ ]
+}

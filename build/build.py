@@ -354,6 +354,47 @@ def home():
 <li><b>Nothing hidden.</b> No sign-up, no bank lead-capture form, no "see your personalised rate" interstitial. The formula is published.</li>
 </ul>
 
+<h2>How to calculate interest on a savings account</h2>
+<p>Three cases, from simplest to the one this calculator exists for:</p>
+<ol>
+<li><b>One year, no deposits:</b> interest = balance × APY. $10,000 × 4.50% = {money(r1['interest'], 2)}.</li>
+<li><b>Any period, no deposits:</b> interest = balance × ((1 + APY)<sup>months ÷ 12</sup> − 1). Six months at 4.50% on $10,000 is {money(10000 * (1.045 ** 0.5 - 1), 2)} — a little less than half a year's interest, because compounding is back-loaded.</li>
+<li><b>With monthly deposits:</b> each deposit earns from the month it lands, so the balance is a sum of many little compounding streams. That is what the schedule above works out month by month. The <a href="/learn/apy-formula/">APY formula</a> page shows the algebra; <a href="/calculators/simple-interest/">simple interest</a> is the version without compounding.</li>
+</ol>
+
+<h2>How a high-yield savings account compares</h2>
+<p>The same $10,000 for one year, at the FDIC national average for each account type ({NAT_ASOF}) and at a 4.50% high-yield rate:</p>
+<div class="tw"><table><thead><tr><th>Account</th><th class="n">National average APY</th><th class="n">Interest on $10,000</th><th>Access</th></tr></thead><tbody>
+<tr><td>Interest checking</td><td class="n">{NAT['interest_checking']:.2f}%</td><td class="n">{money(100 * NAT['interest_checking'], 2)}</td><td>Unlimited</td></tr>
+<tr><td>Traditional savings</td><td class="n">{NAT['savings']:.2f}%</td><td class="n">{money(100 * NAT['savings'], 2)}</td><td>Transfers; some banks cap withdrawals</td></tr>
+<tr><td>Money market account</td><td class="n">{NAT['money_market']:.2f}%</td><td class="n">{money(100 * NAT['money_market'], 2)}</td><td>Checks or debit card</td></tr>
+<tr><td>12-month CD</td><td class="n">{NAT['cd_12m']:.2f}%</td><td class="n">{money(100 * NAT['cd_12m'], 2)}</td><td>Locked; penalty to exit</td></tr>
+<tr><td><b>High-yield savings at 4.50%</b></td><td class="n"><b>4.50%</b></td><td class="n"><b>{money(r1['interest'], 2)}</b></td><td>Transfers, 1–3 business days</td></tr>
+</tbody></table></div>
+<p class="hint">Averages: {FDIC_LINK}. The 4.50% row is an illustration, not a quote — enter the rate your bank offers. The <a href="/rates/">rates page</a> charts how the national average has tracked the Fed since 2021.</p>
+<p>The gap is the whole case for a HYSA: a high-yield account is the <a href="/learn/what-is-a-hysa/">same insured deposit</a> as a traditional savings account, at a rate that is many times higher. What it is not is a growth investment — after tax and inflation the real return is modest, which <a href="/learn/hysa-pros-and-cons/">pros and cons</a> sets out honestly.</p>
+
+<h2>Which calculator do you need?</h2>
+<div class="tw"><table><thead><tr><th>Your question</th><th>Use</th></tr></thead><tbody>
+<tr><td>What will my balance earn over time?</td><td>This page</td></tr>
+<tr><td>How much do I need to earn $1,000 a month?</td><td><a href="/calculators/how-much-to-earn/">Balance for a monthly income</a></td></tr>
+<tr><td>How long until I reach a target?</td><td><a href="/calculators/savings-goal/">Savings goal</a></td></tr>
+<tr><td>How long will my savings last if I draw on them?</td><td><a href="/calculators/withdrawal/">Withdrawal</a></td></tr>
+<tr><td>Should I lock a CD instead?</td><td><a href="/calculators/cd-vs-hysa/">CD vs HYSA</a> · <a href="/calculators/cd-calculator/">CD calculator</a> · <a href="/calculators/cd-ladder/">CD ladder</a></td></tr>
+<tr><td>How big should my emergency fund be?</td><td><a href="/calculators/emergency-fund/">Emergency fund</a></td></tr>
+<tr><td>My bank quotes a rate, not an APY</td><td><a href="/calculators/apy-converter/">APY converter</a></td></tr>
+<tr><td>I want interest without compounding</td><td><a href="/calculators/simple-interest/">Simple interest</a></td></tr>
+</tbody></table></div>
+
+<h2>The terms the calculator uses</h2>
+<ul>
+<li><b>APY</b> — annual percentage yield, the return over a year including compounding; the number US banks must quote under Regulation DD. <a href="/learn/what-is-apy/">What APY means</a>.</li>
+<li><b>Compounding frequency</b> — how often interest is credited. Once APY is fixed, it changes almost nothing; <a href="/learn/how-hysa-compounding-works/">here is why</a>.</li>
+<li><b>Marginal tax rate</b> — the federal and state brackets your <em>next</em> dollar of income falls in; savings interest is taxed at those rates and reported on Form 1099-INT. <a href="/learn/hysa-interest-tax/">How the tax works</a>.</li>
+<li><b>Real value</b> — the balance divided by cumulative inflation, i.e. what it buys in today's dollars.</li>
+<li><b>Ordinary annuity</b> — deposits assumed at the end of each month, the conservative convention. All terms are in the <a href="/glossary/">glossary</a>.</li>
+</ul>
+
 <h2>Questions</h2>
 {faq_html(HOME_FAQ)}
 """
@@ -721,6 +762,28 @@ def learn_what_is_apy():
 <h2>APY vs dividend rate (credit unions)</h2>
 <p>Credit unions are owned by their members, so they call the interest they pay a <em>dividend</em>. The <b>dividend rate</b> is the credit-union equivalent of a nominal interest rate: the rate before compounding. The APY — sometimes written APY or "annual percentage yield" on a credit-union rate sheet — includes compounding, exactly as at a bank. A 4.40% dividend rate compounded monthly is a 4.49% APY. Compare credit unions and banks on APY, never dividend rate against APY.</p>
 
+<h2>APY by account type: what "good" looks like</h2>
+<p>APY is only meaningful against a benchmark. The FDIC publishes national average rates by product ({NAT_ASOF}):</p>
+<div class="tw"><table><thead><tr><th>Product</th><th class="n">National average APY</th><th>What moves it</th></tr></thead><tbody>
+<tr><td>Interest checking</td><td class="n">{NAT['interest_checking']:.2f}%</td><td>Almost nothing; convenience, not yield</td></tr>
+<tr><td>Savings</td><td class="n">{NAT['savings']:.2f}%</td><td>Bank policy; online banks pay many times this</td></tr>
+<tr><td>Money market</td><td class="n">{NAT['money_market']:.2f}%</td><td>Balance tiers</td></tr>
+<tr><td>12-month CD</td><td class="n">{NAT['cd_12m']:.2f}%</td><td>Term and rate expectations</td></tr>
+<tr><td>60-month CD</td><td class="n">{NAT['cd_60m']:.2f}%</td><td>Lower than 12-month: banks expect cuts</td></tr>
+</tbody></table></div>
+<p class="hint">Source: {FDIC_LINK}. A "good" savings APY is one well above the {NAT['savings']:.2f}% average <em>and</em> above inflation after tax. The <a href="/rates/">rates page</a> charts the average against the fed funds rate.</p>
+
+<h2>How APY translates into dollars</h2>
+<p>Because APY is a yearly figure, one year of interest is simply balance × APY: $10,000 at 4.50% is $450, $25,000 is $1,125, $100,000 is $4,500. For part of a year, or with monthly deposits, the compounding curve matters and the <a href="/">HYSA calculator</a> does the arithmetic. The <a href="/answers/">worked examples</a> tabulate common balances at 0.5%–5% APY from one month to ten years.</p>
+
+<h2>Where APY applies — and where it doesn't</h2>
+<ul>
+<li><b>Savings, money market and CD accounts:</b> APY is the required disclosure. Compare on it.</li>
+<li><b>Credit unions:</b> same rule; they say "dividend rate" for the pre-compounding number and APY for the yield.</li>
+<li><b>Loans and credit cards:</b> APR, not APY. APR excludes compounding, which is why a card's true annual cost is higher than its APR. <a href="/learn/apr-vs-apy/">APR vs APY</a>.</li>
+<li><b>Investments:</b> stocks and funds have no APY; their returns are not fixed. Crypto "APY" is a marketing borrow of the term and carries none of the deposit-insurance meaning.</li>
+</ul>
+
 <h2>The mistake to avoid</h2>
 <p class="fact">Do not put an APY into a compound-interest formula as though it were a nominal rate.</p>
 <p>It double-counts compounding. The error is small on small balances and grows with the term. On $100,000 at 5% for ten years, treating APY as a daily-compounded nominal rate overstates the result by about $2,000. Several online calculators make exactly this mistake.</p>
@@ -887,6 +950,17 @@ def learn_what_is_hysa():
 <li>Check for a minimum balance, a balance cap on the headline rate, or monthly fees.</li>
 <li>Check how many withdrawals a month are allowed and how long transfers take.</li>
 <li>Compare on APY, not on a plain rate — see <a href="/learn/what-is-apy/">what APY means</a>.</li>
+</ul>
+
+<h2>Go deeper</h2>
+<ul>
+<li><a href="/learn/hysa-pros-and-cons/">Pros, cons and real risks</a> — what you give up for the rate.</li>
+<li><a href="/learn/can-you-withdraw-from-a-hysa/">Can you withdraw from a HYSA?</a> — timing, limits, Regulation D.</li>
+<li><a href="/learn/how-much-to-keep-in-a-hysa/">How much to keep in one</a> — emergency fund, goals, the $250,000 limit.</li>
+<li><a href="/learn/hysa-interest-tax/">How the interest is taxed</a> — ordinary income, Form 1099-INT.</li>
+<li><a href="/learn/checking-vs-savings/">Checking vs savings</a> and <a href="/learn/hysa-vs-money-market/">HYSA vs money market</a> — where it fits among the other accounts.</li>
+<li><a href="/learn/hysa-vs-investing/">HYSA vs investing</a> — when cash is the wrong tool.</li>
+<li><a href="/">Run your own numbers</a> in the calculator, or see the <a href="/rates/">national average rates</a> it is measured against.</li>
 </ul>
 """,
         [("How does a high-yield savings account work?", "You deposit money by transfer, it earns interest at a variable rate (usually accrued daily and paid monthly), and you withdraw by transfer back to checking, typically within one to three business days."),
