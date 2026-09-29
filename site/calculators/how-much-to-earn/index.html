@@ -14,7 +14,8 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="alternate" type="application/json" href="/api/summary.json" title="Machine-readable summary">
 <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
-<style>:root{--ink:#10241c;--muted:#4b6158;--bg:#f4f8f5;--card:#fff;--line:#d7e3dc;--accent:#0f6b4f;
+<style>figure.chart{margin:1rem 0}figure.chart svg{width:100%;height:auto;display:block}figure.chart figcaption{font-size:.85rem;opacity:.8;margin-top:.3rem}
+:root{--ink:#10241c;--muted:#4b6158;--bg:#f4f8f5;--card:#fff;--line:#d7e3dc;--accent:#0f6b4f;
 --accent-ink:#fff;--warn:#fff6e0;--warn-ink:#5a4300;--pos:#0f6b4f;--neg:#a63a22;color-scheme:light}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]){--ink:#e6efea;--muted:#9fb3aa;
 --bg:#0b1613;--card:#132420;--line:#24403a;--accent:#63c79e;--accent-ink:#06120e;--warn:#3a2f10;
@@ -85,13 +86,13 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;font-size:14px;color
 footer a{color:var(--muted)}footer p{margin:6px 0}
 code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:.92em}
 .formula{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:14px 0;overflow-x:auto;font-variant-numeric:tabular-nums}
-@media (max-width:560px){.fields{grid-template-columns:1fr}.related ul{grid-template-columns:1fr}
+@media (max-width:560px){.fields{grid-template-columns:1fr}[data-tool=ef] .fields,[data-tool=ladder] .fields,[data-tool=simple] .fields{grid-template-columns:1fr 1fr}[data-tool=ef] .hint{display:none}[data-tool=ef] .fields{align-items:end}.related ul{grid-template-columns:1fr}
 nav.main a{margin-left:10px}}</style>
 <script type="application/ld+json">[{"@context":"https://schema.org","@type":"Organization","name":"HYSA Yield","url":"https://www.hysayield.com","logo":"https://www.hysayield.com/icon-512.png"},{"@context":"https://schema.org","@type":"WebPage","@id":"https://www.hysayield.com/calculators/how-much-to-earn/#page","url":"https://www.hysayield.com/calculators/how-much-to-earn/","name":"How Much Do I Need to Earn $1,000 a Month in Interest?","description":"To earn $1,000 a month at 4.50% APY you need about $272,123. Work out the balance for any income target, rate and tax bracket.","inLanguage":"en-US","dateModified":"2026-09-29","isPartOf":{"@type":"WebSite","name":"HYSA Yield","url":"https://www.hysayield.com"},"speakable":{"@type":"SpeakableSpecification","cssSelector":["#answer","h1"]}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.hysayield.com/"},{"@type":"ListItem","position":2,"name":"Calculators","item":"https://www.hysayield.com/calculators/"},{"@type":"ListItem","position":3,"name":"How much do I need","item":"https://www.hysayield.com/calculators/how-much-to-earn/"}]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How much do I need in savings to make $1,000 a month?","acceptedAnswer":{"@type":"Answer","text":"About $272,123 at 4.50% APY, before tax. At a combined 29% tax rate you would need roughly $383,272 to keep $1,000 a month."}},{"@type":"Question","name":"How much interest does $100,000 earn per month?","acceptedAnswer":{"@type":"Answer","text":"At 4.50% APY, about $367.48 a month before tax."}},{"@type":"Question","name":"Is living off savings interest realistic?","acceptedAnswer":{"@type":"Answer","text":"It takes a large balance and the rate is not guaranteed. Savings interest is best treated as a supplement or a cushion rather than a salary, because the rate can be cut at any time and inflation erodes what it buys."}}]}]</script>
 </head>
 <body>
 <header class="top"><div class="wrap"><a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M5 20V12"/><path d="M10 20V8"/><path d="M15 20V5"/><path d="M20 20V3"/></svg>HYSA Yield</a>
-<nav class="main" aria-label="Main"><a href="/">Calculator</a><a href="/calculators/">Tools</a><a href="/learn/">Learn</a><a href="/methodology/">Method</a></nav></div></header>
+<nav class="main" aria-label="Main"><a href="/">Calculator</a><a href="/calculators/">Tools</a><a href="/learn/">Learn</a><a href="/rates/">Rates</a></nav></div></header>
 <main class="wrap"><p class="crumb"><a href="/">Home</a> / <a href="/calculators/">Calculators</a> / How much do I need</p>
 <h1>How much do I need to earn $1,000 a month?</h1>
 <p class="lede">Working backwards from the income you want to the balance it takes.</p>
@@ -126,7 +127,7 @@ nav.main a{margin-left:10px}}</style>
 <p>For what a balance you already have will earn, use the <a href="/">main calculator</a> or the <a href="/answers/">worked examples</a>.</p>
 <nav class="related" aria-labelledby="rel-h"><h2 id="rel-h">Related</h2><ul><li><a href="/">HYSA calculator</a></li><li><a href="/learn/hysa-interest-tax/">Tax on savings interest</a></li><li><a href="/answers/">Worked examples</a></li><li><a href="/calculators/">All calculators</a></li></ul></nav></main>
 <footer><div class="wrap">
-<p><a href="/calculators/">Calculators</a> · <a href="/answers/">Worked examples</a> · <a href="/glossary/">Glossary</a> · <a href="/methodology/">Methodology</a> · <a href="/llms.txt">llms.txt</a></p>
+<p><a href="/calculators/">Calculators</a> · <a href="/answers/">Worked examples</a> · <a href="/rates/">Rates data</a> · <a href="/glossary/">Glossary</a> · <a href="/methodology/">Methodology</a> · <a href="/llms.txt">llms.txt</a></p>
 <p><a href="/about/">About</a> · <a href="/disclosures/">Disclosures</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
 <p>Calculations run entirely in your browser. Nothing you type is sent anywhere or stored.</p>
 <p>© 2026 HYSA Yield. Not financial advice.</p></div></footer>

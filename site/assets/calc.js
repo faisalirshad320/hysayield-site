@@ -197,6 +197,84 @@
     return null; // interest covers the withdrawal indefinitely
   };
 
+  /* Simple interest: I = P x r x t. Interest is never added to the balance,
+     so it earns nothing further. Rate is the nominal annual rate. */
+  M.simpleInterest = function (principal, rate, years) {
+    var interest = (principal || 0) * (rate || 0) * (years || 0);
+    return { interest: interest, total: (principal || 0) + interest };
+  };
+
+  // Compound interest on a NOMINAL rate compounded n times a year, for
+  // comparing against simple interest at the same stated rate.
+  M.compoundOnNominal = function (principal, rate, n, years) {
+    var total = (principal || 0) * Math.pow(1 + (rate || 0) / n, n * (years || 0));
+    return { interest: total - (principal || 0), total: total };
+  };
+
+  /* CD to maturity, plus what you would walk away with if you broke it at
+     each month. The penalty is quoted in months of interest on the principal,
+     at the CD's own rate, which is how most US banks define it.
+     breakEvenMonth: the first month at which interest earned covers the
+     penalty. Break the CD before then and you get back less than you put in. */
+  M.cd = function (o) {
+    var months = Math.max(1, Math.round(o.months));
+    var r = M.project({ principal: o.principal, apy: o.apy, compounding: o.compounding || "daily",
+                        monthlyDeposit: 0, months: months,
+                        fedRate: o.fedRate, stateRate: o.stateRate });
+    var monthlyInterest = (o.principal || 0) * (Math.pow(1 + o.apy, 1 / 12) - 1);
+    var penalty = (o.penaltyMonths || 0) * monthlyInterest;
+    var breakEven = null, early = [];
+    for (var k = 0; k < r.schedule.length; k++) {
+      var earned = r.schedule[k].closing - (o.principal || 0);
+      var walkAway = r.schedule[k].closing - Math.min(penalty, r.schedule[k].closing);
+      early.push({ month: k + 1, interest: earned, walkAway: walkAway });
+      if (breakEven === null && earned >= penalty) breakEven = k + 1;
+    }
+    return {
+      months: months, maturity: r.finalBalance, interest: r.interest,
+      tax: r.tax, afterTaxInterest: r.afterTaxInterest, taxRate: r.taxRate,
+      penalty: penalty, breakEvenMonth: breakEven, early: early
+    };
+  };
+
+  /* CD ladder: split an amount equally across rungs, each with its own term
+     (months) and APY. Returns each rung's maturity, the blended APY (the
+     amount-weighted average, which with equal rungs is the plain mean), and
+     how often money becomes available. */
+  M.ladder = function (total, rungs) {
+    var n = rungs.length;
+    if (!n) return { rungs: [], blendedApy: 0, totalInterest: 0 };
+    var share = (total || 0) / n, out = [], interest = 0, apySum = 0;
+    for (var i = 0; i < n; i++) {
+      var m = Math.max(1, Math.round(rungs[i].months));
+      var val = share * Math.pow(1 + rungs[i].apy, m / 12);
+      out.push({ months: m, apy: rungs[i].apy, amount: share, maturity: val, interest: val - share });
+      interest += val - share;
+      apySum += rungs[i].apy;
+    }
+    out.sort(function (a, b) { return a.months - b.months; });
+    return { rungs: out, share: share, blendedApy: apySum / n, totalInterest: interest,
+             firstAccessMonths: out[0].months };
+  };
+
+  /* Emergency fund. Target = monthly essential expenses x months of cover.
+     Time to reach it assumes the fund sits in a savings account at `apy`. */
+  M.emergencyFund = function (o) {
+    var monthly = 0;
+    (o.expenses || []).forEach(function (x) { monthly += Math.max(0, x || 0); });
+    var target = monthly * (o.months || 0);
+    var current = Math.max(0, o.current || 0);
+    var gap = Math.max(0, target - current);
+    var months = gap <= 0 ? 0 : M.monthsToGoal(target, { principal: current, apy: o.apy || 0,
+                                   compounding: "daily", monthlyDeposit: o.monthlyContribution || 0 });
+    return {
+      monthlyExpenses: monthly, target: target, current: current, gap: gap,
+      coverageNow: monthly > 0 ? current / monthly : 0,
+      monthsToTarget: months,
+      yearlyInterestAtTarget: target * (o.apy || 0)   // one year at APY on a steady balance
+    };
+  };
+
   if (typeof module !== "undefined" && module.exports) module.exports = M;
   else root.HysaCalc = M;
 })(this);

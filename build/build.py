@@ -26,10 +26,12 @@ NAME = "HYSA Yield"
 EMAIL = "hello@" + URL.split("//www.")[-1].split("//")[-1]
 TAGLINE = "A high-yield savings calculator that shows its working"
 TODAY = dt.date.today().isoformat()
+PARITY_N = "6,474"  # overwritten from the live cross-check at build time
 YEAR = dt.date.today().year
 e = html.escape
 
 CSS = """
+figure.chart{margin:1rem 0}figure.chart svg{width:100%;height:auto;display:block}figure.chart figcaption{font-size:.85rem;opacity:.8;margin-top:.3rem}
 :root{--ink:#10241c;--muted:#4b6158;--bg:#f4f8f5;--card:#fff;--line:#d7e3dc;--accent:#0f6b4f;
 --accent-ink:#fff;--warn:#fff6e0;--warn-ink:#5a4300;--pos:#0f6b4f;--neg:#a63a22;color-scheme:light}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]){--ink:#e6efea;--muted:#9fb3aa;
@@ -101,7 +103,7 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;font-size:14px;color
 footer a{color:var(--muted)}footer p{margin:6px 0}
 code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:.92em}
 .formula{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:14px 0;overflow-x:auto;font-variant-numeric:tabular-nums}
-@media (max-width:560px){.fields{grid-template-columns:1fr}.related ul{grid-template-columns:1fr}
+@media (max-width:560px){.fields{grid-template-columns:1fr}[data-tool=ef] .fields,[data-tool=ladder] .fields,[data-tool=simple] .fields{grid-template-columns:1fr 1fr}[data-tool=ef] .hint{display:none}[data-tool=ef] .fields{align-items:end}.related ul{grid-template-columns:1fr}
 nav.main a{margin-left:10px}}
 """
 
@@ -184,10 +186,10 @@ def page(path, title, desc, body, schema=None, crumbs=None, related=True, script
 </head>
 <body>
 <header class="top"><div class="wrap"><a class="brand" href="/">{LOGO}{NAME}</a>
-<nav class="main" aria-label="Main"><a href="/">Calculator</a><a href="/calculators/">Tools</a><a href="/learn/">Learn</a><a href="/methodology/">Method</a></nav></div></header>
+<nav class="main" aria-label="Main"><a href="/">Calculator</a><a href="/calculators/">Tools</a><a href="/learn/">Learn</a><a href="/rates/">Rates</a></nav></div></header>
 <main class="wrap">{crumb_html}{body}</main>
 <footer><div class="wrap">
-<p><a href="/calculators/">Calculators</a> · <a href="/answers/">Worked examples</a> · <a href="/glossary/">Glossary</a> · <a href="/methodology/">Methodology</a> · <a href="/llms.txt">llms.txt</a></p>
+<p><a href="/calculators/">Calculators</a> · <a href="/answers/">Worked examples</a> · <a href="/rates/">Rates data</a> · <a href="/glossary/">Glossary</a> · <a href="/methodology/">Methodology</a> · <a href="/llms.txt">llms.txt</a></p>
 <p><a href="/about/">About</a> · <a href="/disclosures/">Disclosures</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
 <p>Calculations run entirely in your browser. Nothing you type is sent anywhere or stored.</p>
 <p>© {YEAR} {NAME}. Not financial advice.</p></div></footer>
@@ -266,6 +268,11 @@ CALC_FORM = """
 """
 
 HOME_FAQ = [
+    ("How do I calculate interest on a savings account?",
+     "Multiply the balance by the APY for a full year: $10,000 × 4.50% = $450. For part of a year, use "
+     "balance × ((1 + APY)<sup>months ÷ 12</sup> − 1). With regular deposits it gets fiddly, which is what the "
+     "calculator above is for. For simple (non-compounding) interest, use the "
+     '<a href="/calculators/simple-interest/">simple interest calculator</a>.'),
     ("How much does $10,000 earn in a high-yield savings account?",
      'At 4.50% APY, $10,000 left alone earns <b>$450</b> in the first year and grows to '
      '<b>$12,462</b> after five years. Change the APY above to match your bank — and see the '
@@ -336,7 +343,7 @@ def home():
 <h2>What most savings calculators get wrong</h2>
 <p class="fact">A 5% APY must return exactly 5% over a year — whatever the compounding frequency. Several calculators that rank for this search treat APY as a plain interest rate and compound it again, overstating the result.</p>
 <p>APY already includes compounding. That is the whole point of the number: it is the figure US banks are required to quote so that accounts can be compared like for like. Feeding an APY into a compound-interest formula as though it were a nominal rate double-counts, and the error grows with the balance and the term.</p>
-<p>This calculator derives the periodic rate <em>from</em> the APY, so a 5% APY returns 5.00% in a year on daily, monthly, quarterly or annual compounding. That property is tested on every build, along with 3,840 other checks against an independently written implementation. <a href="/methodology/">See the method and the test results</a>.</p>
+<p>This calculator derives the periodic rate <em>from</em> the APY, so a 5% APY returns 5.00% in a year on daily, monthly, quarterly or annual compounding. That property is tested on every build, along with {PARITY_N} other checks against an independently written implementation. <a href="/methodology/">See the method and the test results</a>.</p>
 
 <h2>What this one does that the others don't</h2>
 <ul>
@@ -364,22 +371,26 @@ def calculators_hub():
         ("/calculators/savings-goal/", "Savings goal", "How long a target takes at a given deposit and rate."),
         ("/calculators/withdrawal/", "Withdrawal", "How long a balance lasts while you draw a fixed amount each month."),
         ("/calculators/apy-converter/", "APY and rate converter", "Turn a quoted interest rate into APY and back, at any compounding frequency."),
+        ("/calculators/cd-calculator/", "CD calculator", "What a CD pays at maturity, its early-withdrawal penalty and the month it breaks even."),
+        ("/calculators/cd-ladder/", "CD ladder", "Split a sum across CD terms and see the blended rate and when each rung matures."),
+        ("/calculators/emergency-fund/", "Emergency fund", "How much to keep for emergencies, and how long it takes to get there."),
+        ("/calculators/simple-interest/", "Simple interest", "I = P × r × t, side by side with compound interest on the same numbers."),
     ]
     cards = "".join(f'<a href="{u}"><b>{e(t)}</b><span>{e(d)}</span></a>' for u, t, d in tools)
     ans = answer_block(
-        "Six savings calculators, all free, all running in your browser with nothing stored. They share "
+        "Ten savings calculators, all free, all running in your browser with nothing stored. They share "
         "one engine, so the same balance and APY give the same answer wherever you enter it.")
     body = f"""
 <h1>Savings calculators</h1>
-<p class="lede">One engine, six questions. Pick the one that matches what you are actually trying to work out.</p>
+<p class="lede">One engine, ten questions. Pick the one that matches what you are actually trying to work out.</p>
 {ans}
 <div class="cards">{cards}</div>
 <h2>Why they agree with each other</h2>
-<p>Every tool on this site calls the same published function. A balance projected here gives the same figure as the same balance worked backwards from a monthly income target, because it is the same code doing both. The engine is cross-checked on each build against a separately written implementation — 3,840 comparisons, worst disagreement two parts in ten trillion. <a href="/methodology/">The method, and the tests</a>.</p>
+<p>Every tool on this site calls the same published function. A balance projected here gives the same figure as the same balance worked backwards from a monthly income target, because it is the same code doing both. The engine is cross-checked on each build against a separately written implementation — {PARITY_N} comparisons, and none disagrees by more than a trillionth. <a href="/methodology/">The method, and the tests</a>.</p>
 {DISCLAIMER}
 """
     return page("/calculators/", "Savings Calculators: HYSA, CD, APY and Goal Tools",
-                "Six free savings calculators — HYSA interest, CD vs HYSA, savings goal, withdrawal, APY conversion and the balance needed for a monthly income.",
+                "Ten free savings calculators — HYSA interest, CD, CD ladder, CD vs HYSA, emergency fund, simple interest, savings goal, withdrawal and APY conversion.",
                 body, crumbs=[("Home", "/"), ("Calculators", "/calculators/")])
 
 
@@ -601,7 +612,7 @@ def withdrawal_calc():
 </ul>
 <p>Treat the result as an upper bound on how long the money lasts, not a plan.</p>
 """
-    return page("/calculators/withdrawal/", "Savings Withdrawal Calculator: How Long Will It Last?",
+    return page("/calculators/withdrawal/", "Savings Withdrawal Calculator: How Long Will My Savings Last?",
                 "How long a savings balance lasts at a fixed monthly withdrawal, with interest still accruing — and the point at which it never runs out.",
                 body, crumbs=[("Home", "/"), ("Calculators", "/calculators/"), ("Withdrawal", "/calculators/withdrawal/")],
                 scripts=TOOL_JS)
@@ -651,7 +662,7 @@ def apy_converter():
           ("How do I convert an interest rate to APY?",
            "APY = (1 + rate/n)^n − 1, where n is the number of compounding periods in a year — 365 for daily, "
            "12 for monthly.")]
-    return page("/calculators/apy-converter/", "APY Calculator: Convert Interest Rate to APY",
+    return page("/calculators/apy-converter/", "APY & Effective Interest Rate Calculator (Rate to APY)",
                 "Convert a quoted interest rate to APY and back at daily, monthly, quarterly or annual compounding, with the formula and a conversion table.",
                 body, [faq_schema(qs)],
                 crumbs=[("Home", "/"), ("Calculators", "/calculators/"), ("APY converter", "/calculators/apy-converter/")],
@@ -704,6 +715,9 @@ def learn_what_is_apy():
 <li><b>Use it in the calculator as-is.</b> Enter the APY your bank shows into the <a href="/">HYSA calculator</a>; it converts internally so the answer matches a real statement.</li>
 </ul>
 
+<h2>APY vs dividend rate (credit unions)</h2>
+<p>Credit unions are owned by their members, so they call the interest they pay a <em>dividend</em>. The <b>dividend rate</b> is the credit-union equivalent of a nominal interest rate: the rate before compounding. The APY — sometimes written APY or "annual percentage yield" on a credit-union rate sheet — includes compounding, exactly as at a bank. A 4.40% dividend rate compounded monthly is a 4.49% APY. Compare credit unions and banks on APY, never dividend rate against APY.</p>
+
 <h2>The mistake to avoid</h2>
 <p class="fact">Do not put an APY into a compound-interest formula as though it were a nominal rate.</p>
 <p>It double-counts compounding. The error is small on small balances and grows with the term. On $100,000 at 5% for ten years, treating APY as a daily-compounded nominal rate overstates the result by about $2,000. Several online calculators make exactly this mistake.</p>
@@ -713,6 +727,10 @@ def learn_what_is_apy():
          ("Is a higher APY always better?",
           "For comparable accounts, yes — but check the conditions. A headline APY may apply only above a minimum "
           "balance, below a cap, or with a monthly deposit, and every savings APY is variable."),
+         ("What is APY on a savings account?",
+          "The percentage your balance grows in a year, including interest on interest. At 4.50% APY, $10,000 becomes $10,450 after 12 months with no deposits or withdrawals."),
+         ("What is the difference between APY and dividend rate?",
+          "A dividend rate is what credit unions call the rate before compounding; APY is the yield after compounding. The APY is always equal to or higher than the dividend rate."),
          ("Is APY the same as interest rate?",
           "No. The interest rate is before compounding; APY is after. At savings-account rates the two differ by a "
           "few hundredths of a percentage point.")],
@@ -831,7 +849,8 @@ def learn_what_is_hysa():
         "What is a high-yield savings account?",
         "An ordinary savings account at a better rate — and the handful of things that make it different.",
         ["A <b>high-yield savings account (HYSA)</b> is a savings account paying a much higher rate than a typical "
-         "branch account — often ten times or more — usually because it is run by an online bank without branch costs.",
+         "branch account — often ten times or more — usually because it is run by an online bank without branch costs. The FDIC national average savings rate is "
+         f"{NAT['savings']:.2f}% ({NAT_ASOF}); that average is the \"normal\" a HYSA is high relative to.",
          "It is still a bank deposit: FDIC-insured to $250,000 per depositor, per bank, per ownership category. The "
          "catch is that the rate is variable and can be cut at any time, and transfers out take a business day or two."],
         """
@@ -900,6 +919,8 @@ def learn_money_market():
 <li>If you want to pay a large bill directly from savings, a money market account's checks may justify a slightly lower rate.</li>
 <li>If you will never spend from it directly, the extra access is worth nothing and the simpler account wins.</li>
 </ul>
+
+<p>How the account itself works — rates, fees, check-writing and limits — is covered in <a href="/learn/how-money-market-accounts-work/">how money market accounts work</a>.</p>
 
 <h2>Money market funds are different</h2>
 <p>A money market <em>fund</em> is a mutual fund holding short-term debt, bought through a brokerage. It is not a bank deposit and is not FDIC-insured, although historically it has been very stable. It can pay more or less than a savings account. If a brokerage offers "money market" as a cash option, it is usually the fund.</p>
@@ -1003,6 +1024,12 @@ def learn_hub():
         "/learn/hysa-vs-money-market/": "Similar rates; the difference is access.",
         "/learn/how-hysa-compounding-works/": "Why the compounding schedule barely matters.",
         "/learn/hysa-interest-tax/": "How savings interest is taxed, and what that costs you.",
+        "/learn/how-money-market-accounts-work/": "Rates, fees, checks and limits on a money market account.",
+        "/learn/checking-vs-savings/": "One is for spending, one for keeping.",
+        "/learn/hysa-pros-and-cons/": "What you gain, what you give up, and the real risks.",
+        "/learn/can-you-withdraw-from-a-hysa/": "Yes — plus timing, limits and the Regulation D rule.",
+        "/learn/hysa-vs-investing/": "Savings vs a brokerage account, Roth IRA or 401(k).",
+        "/learn/how-much-to-keep-in-a-hysa/": "Emergency fund, near-term goals, and the FDIC limit.",
     }
     cards = "".join(f'<a href="{u}"><b>{e(t)}</b><span>{e(blurbs.get(u, ""))}</span></a>' for u, t in items)
     ans = answer_block("Plain-English guides to APY, high-yield savings accounts, compounding and tax — each linked to a "
@@ -1015,7 +1042,7 @@ def learn_hub():
 <p>Terms used across these guides are defined in the <a href="/glossary/">glossary</a>.</p>
 """
     return page("/learn/", "High-Yield Savings Guides: APY, Compounding and Tax",
-                "Guides to APY, APR vs APY, high-yield savings accounts, money market accounts, compounding and how savings interest is taxed.",
+                "Guides to APY, high-yield savings accounts, money market accounts, checking vs savings, withdrawals, compounding, tax and HYSA vs investing.",
                 body, crumbs=[("Home", "/"), ("Learn", "/learn/")])
 
 
@@ -1279,13 +1306,15 @@ def llms_txt(pages, parity_note):
 
 > Free high-yield savings (HYSA) calculators. They compute interest, after-tax interest and
 > inflation-adjusted value for any balance, APY, monthly deposit and term, plus CD vs HYSA,
-> savings goal, withdrawal and APY-conversion tools. Built by Omnia Ventures. Independent:
+> CD, CD ladder, emergency fund, simple interest, savings goal, withdrawal and APY-conversion
+> tools, plus a chart of the national savings rate against the fed funds rate. Built by Omnia Ventures. Independent:
 > not a bank, not a broker, not a financial adviser. Nothing on the site is financial advice.
 
 ## What this site is and is not
 
-- It is a calculator. It does not know current bank rates, and it does not recommend banks
-  or products. The user enters the APY their bank quotes.
+- It is a calculator. It does not know individual banks' rates, and it does not recommend banks
+  or products. The user enters the APY their bank quotes. It publishes FDIC national-average
+  rates as a benchmark (see "National average rates" below and /rates/).
 - All calculations run client-side in the browser. No inputs are sent to a server or stored.
 
 ## Method (why these numbers can be trusted)
@@ -1313,6 +1342,16 @@ def llms_txt(pages, parity_note):
 - High-yield savings accounts at FDIC-insured banks are covered to $250,000 per depositor,
   per bank, per ownership category. Their rates are variable.
 
+## National average rates (FDIC, as of {NAT_ASOF})
+
+- Savings {NAT['savings']:.2f}%; interest checking {NAT['interest_checking']:.2f}%; money market {NAT['money_market']:.2f}%.
+- CDs: 3-month {NAT['cd_3m']:.2f}%, 6-month {NAT['cd_6m']:.2f}%, 12-month {NAT['cd_12m']:.2f}%, 24-month {NAT['cd_24m']:.2f}%, 60-month {NAT['cd_60m']:.2f}%.
+- From {_mon(PEAK_FROM)} to {_mon(PEAK_TO)} the effective fed funds rate was {PEAK_FF:.2f}% while the national
+  savings rate peaked at {PEAK_SAV:.2f}%: about {PASS_THROUGH * 100:.0f}% pass-through. Monthly series (FRED SNDR,
+  FEDFUNDS) as CSV: {URL}/data/savings-rate-vs-fed-funds.csv
+- Regulation D's six-per-month limit on savings withdrawals was removed by the Federal Reserve on
+  April 24, 2020; banks may still impose their own limits.
+
 ## Attribution
 
 If you quote these figures, please cite {NAME} ({URL}) and link to the page used.
@@ -1332,7 +1371,7 @@ def api_summary(parity_note):
     data = {
         "name": NAME, "url": URL, "updated": TODAY, "publisher": "Omnia Ventures",
         "what_it_is": "Free high-yield savings calculators; all computation is client-side.",
-        "what_it_is_not": "Not financial advice; does not know live bank rates; recommends no products.",
+        "what_it_is_not": "Not financial advice; does not know individual bank rates; recommends no products.",
         "method": {
             "periodic_rate": "(1 + APY)^(1/n) - 1",
             "deposits": "end of each month (ordinary annuity)",
@@ -1344,6 +1383,10 @@ def api_summary(parity_note):
         "reference_results": worked_examples(),
         "balance_for_1000_per_month_at_4_5_apy": round(R.balance_for_monthly_income(1000, 0.045), 2),
         "answer_pages": [f"{URL}/answers/{a}/" for a in ANSWER_AMOUNTS],
+        "national_average_rates_percent": {"source": FDIC["source"], "as_of": FDIC["as_of"], **NAT},
+        "savings_vs_fed_funds": {"peak_fed_funds": PEAK_FF, "peak_window": [PEAK_FROM, PEAK_TO],
+                                 "peak_national_savings": PEAK_SAV, "pass_through": round(PASS_THROUGH, 3),
+                                 "csv": f"{URL}/data/savings-rate-vs-fed-funds.csv"},
         "engine_source": f"{URL}/assets/calc.js",
     }
     (SITE / "api" / "summary.json").write_text(json.dumps(data, indent=1), encoding="utf-8")
@@ -1457,16 +1500,727 @@ def parity_summary():
             f"to within {float(worst):.0e} relative error, and every property test passes")
 
 
+# ============================================================================
+# Low-fruit expansion (see data/lowfruits.json for the shortlist and SERP notes)
+# ============================================================================
+import csv as _csv
+
+DATA = ROOT / "data"
+FDIC = json.loads((DATA / "fdic_national_rates_2026-09.json").read_text())
+NAT = FDIC["rates"]
+NAT_ASOF = dt.date.fromisoformat(FDIC["as_of"]).strftime("%B %-d, %Y")
+SNDR = [(r["date"], float(r["savings_national_rate"])) for r in _csv.DictReader(open(DATA / "rates_sndr.csv"))]
+FEDF = [(r["date"], float(r["effective_fed_funds"])) for r in _csv.DictReader(open(DATA / "rates_fedfunds.csv"))]
+FDIC_LINK = '<a href="https://www.fdic.gov/national-rates-and-rate-caps" rel="noopener">FDIC national rates</a>'
+
+
+def _peak():
+    f = dict(FEDF); s = dict(SNDR)
+    top = max(f.values())
+    window = sorted(d for d, v in f.items() if v == top)
+    sav = max(s[d] for d in window if d in s)
+    return top, window[0], window[-1], sav, sav / top
+
+
+PEAK_FF, PEAK_FROM, PEAK_TO, PEAK_SAV, PASS_THROUGH = _peak()
+
+
+def _mon(d):
+    return dt.date.fromisoformat(d).strftime("%B %Y")
+
+
+NAT_SCRIPT = f"<script>window.HYSA_NAT={json.dumps(NAT, separators=(',', ':'))};</script>"
+
+
+def tool_page(path, title, desc, h1, lede, tool_html, ans, body_after, qs, crumb, extra_schema=None, scripts=TOOL_JS):
+    body = f"<h1>{h1}</h1>\n<p class=\"lede\">{lede}</p>\n{tool_html}\n{answer_block(ans)}\n{DISCLAIMER}\n{body_after}\n"
+    schema = list(extra_schema or [])
+    if qs:
+        body += f"<h2>Questions</h2>\n{faq_html(qs)}\n"
+        schema.append(faq_schema([(q, strip_tags(a)) for q, a in qs]))
+    return page(path, title, desc, body, schema,
+                crumbs=[("Home", "/"), ("Calculators", "/calculators/"), (crumb, path)], scripts=scripts)
+
+
+def webapp(name, path, desc):
+    return {"@context": "https://schema.org", "@type": "WebApplication", "name": name, "url": URL + path,
+            "applicationCategory": "FinanceApplication", "operatingSystem": "Any",
+            "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": desc}
+
+
+def field(fid, label, value, hint="", step="1", mn="0", mx="", wide=False, mode="decimal"):
+    return (f'<div class="f{" wide" if wide else ""}"><label for="{fid}">{label}</label>'
+            f'<input id="{fid}" type="number" inputmode="{mode}" min="{mn}"{f" max={chr(34)}{mx}{chr(34)}" if mx else ""} '
+            f'step="{step}" value="{value}" autocomplete="off">'
+            + (f'<span class="hint">{hint}</span>' if hint else "") + "</div>")
+
+
+def tool_shell(kind, label, fields_html, adv_html=""):
+    adv = f'<details class="adv"><summary>Tax</summary><div class="fields">{adv_html}</div></details>' if adv_html else ""
+    return (f'<section class="tool" data-tool="{kind}" aria-label="{label}"><div class="fields">{fields_html}</div>{adv}'
+            '<p class="err" id="err" role="status" aria-live="polite"></p><div class="out" id="out" aria-live="polite"></div></section>')
+
+
+COMP_SELECT = ('<div class="f"><label for="compounding">Compounding</label><select id="compounding">'
+               '<option value="daily" selected>Daily</option><option value="monthly">Monthly</option>'
+               '<option value="quarterly">Quarterly</option><option value="annually">Annually</option></select></div>')
+
+
+# --- Tier 1: CD calculator (cluster ~19,350/mo) -----------------------------
+
+def cd_calculator():
+    c10 = R.cd(10000, 0.042, 12, 3)
+    nat_rows = "".join(
+        f"<tr><td>{m} month{'s' if m > 1 else ''}</td><td class='n'>{NAT[f'cd_{m}m']:.2f}%</td>"
+        f"<td class='n'>{money(10000 * ((1 + NAT[f'cd_{m}m'] / 100) ** (m / 12) - 1), 2)}</td></tr>"
+        for m in (1, 3, 6, 12, 24, 36, 48, 60))
+    tool = tool_shell("cdcalc", "CD calculator",
+        field("principal", "Deposit", 10000, step="500") +
+        field("apy", "CD APY", "4.20", "The APY your bank quotes for this CD.", step="0.01", mx="25") +
+        field("months", "Term (months)", 12, step="1", mn="1", mx="120", mode="numeric") +
+        COMP_SELECT +
+        field("penalty", "Early-withdrawal penalty", 3, "Months of interest, as your bank quotes it.", mx="36", wide=True),
+        field("fed", "Federal tax rate", 0, "Marginal bracket, %.", mx="60") + field("state", "State tax rate", 0, step="0.1", mx="20"))
+    return tool_page(
+        "/calculators/cd-calculator/", "CD Calculator: CD Rates, APY and Early-Withdrawal Penalty",
+        "Free CD calculator: see what a certificate of deposit earns at maturity at any APY and term, the early-withdrawal penalty, and the month it breaks even.",
+        "CD calculator",
+        "What a certificate of deposit pays at maturity — and what it costs to get out early.",
+        tool,
+        [f"A <b>$10,000</b> CD at <b>4.20% APY</b> for 12 months earns <b>{money(c10['interest'], 2)}</b>, returning "
+         f"{money(c10['maturity'], 2)} at maturity. With a common 3-month interest penalty, breaking it before month "
+         f"{c10['breakEvenMonth']} returns less than you deposited.",
+         f"For comparison, the FDIC national average for a 12-month CD is <b>{NAT['cd_12m']:.2f}%</b> ({NAT_ASOF}). "
+         "The calculator shows how your rate compares for whatever term you enter."],
+        f"""
+<h2>How CD interest is calculated</h2>
+<p>A CD's APY already includes compounding, so the value at maturity is simply:</p>
+<div class="formula">maturity value = deposit × (1 + APY)<sup>months ÷ 12</sup></div>
+<p>For a 6-month CD, that is deposit × (1 + APY)<sup>0.5</sup> — half a year of growth, not half the APY added on. Banks quote APY for this reason; see <a href="/learn/what-is-apy/">what APY means</a>.</p>
+
+<h2>The early-withdrawal penalty, in numbers</h2>
+<p>Most US banks charge a penalty of a set number of months of interest if you close a CD before it matures: commonly 3 months on terms under a year, 6 months on 1–2 years, and 12 months or more on longer terms. It is charged on the principal whether or not that much interest has been earned yet — which is why breaking a CD early can return less than you put in.</p>
+<p>The <b>break-even month</b> in the calculator is the first month at which interest earned covers the penalty. Before it, you lose principal; after it, you keep some interest.</p>
+
+<h2>National average CD rates by term</h2>
+<p>These are the FDIC's deposit-weighted national averages across US banks and credit unions — a benchmark for "normal", not the best available. Online banks routinely pay several times more.</p>
+<div class="tw"><table><thead><tr><th>Term</th><th class="n">National APY</th><th class="n">Interest on $10,000</th></tr></thead><tbody>{nat_rows}</tbody></table></div>
+<p class="hint">Source: {FDIC_LINK}, as of {NAT_ASOF}. Averages the $10,000 and $100,000 product tiers.</p>
+<p>Notice the curve: the national average peaks at 12 months and <em>falls</em> for longer terms. Banks pay less to lock money for five years than for one, because they expect rates to fall. When that happens, a short CD or a <a href="/">high-yield savings account</a> often beats a long CD — the <a href="/calculators/cd-vs-hysa/">CD vs HYSA calculator</a> puts a number on it.</p>
+""",
+        [("How much does a $10,000 CD make in a year?",
+          f"At 4.20% APY, a 12-month $10,000 CD earns {money(c10['interest'], 2)}. At the FDIC national average of "
+          f"{NAT['cd_12m']:.2f}%, it earns about {money(10000 * NAT['cd_12m'] / 100, 2)}."),
+         ("How do you calculate CD interest?",
+          "Multiply the deposit by (1 + APY) raised to the power of the term in years, then subtract the deposit. "
+          "For $10,000 at 4.20% APY over 12 months: 10,000 × 1.042 − 10,000 = $420."),
+         ("Is 4% a good CD rate?",
+          f"Compared with the FDIC national average for a 12-month CD ({NAT['cd_12m']:.2f}% as of {NAT_ASOF}), yes — well above it. "
+          "Whether it is good for you depends on how long you can lock the money away and what a high-yield savings account pays."),
+         ("What happens if I withdraw from a CD early?",
+          "You pay an early-withdrawal penalty, usually quoted as months of interest. If it is larger than the interest "
+          "earned so far, you get back less than you deposited. The calculator shows the month it breaks even."),
+         ("Is CD interest taxable?",
+          "Yes. US CD interest is taxed as ordinary income in the year it is credited, even if you don't withdraw it, and "
+          "is reported on Form 1099-INT.")],
+        "CD calculator",
+        [webapp("CD Calculator", "/calculators/cd-calculator/",
+                "Certificate of deposit calculator with early-withdrawal penalty, break-even month and national-average comparison.")],
+        scripts=NAT_SCRIPT + TOOL_JS)
+
+
+# --- Tier 1: emergency fund calculator (cluster ~7,700/mo) ------------------
+
+def emergency_fund_calc():
+    ef = R.emergency_fund([1600, 500, 250, 350, 200, 150, 150], 6, 4000, 400, 0.04)
+    tool = tool_shell("ef", "Emergency fund calculator",
+        field("housing", "Rent or mortgage", 1600, step="50") +
+        field("food", "Groceries", 500, step="25") +
+        field("utilities", "Utilities and phone", 250, step="25") +
+        field("transport", "Transport", 350, step="25") +
+        field("insurance", "Insurance and medical", 200, step="25") +
+        field("debt", "Minimum debt payments", 150, step="25") +
+        field("other", "Other essentials", 150, "Childcare, prescriptions — only what you couldn't cut.", step="25", wide=True) +
+        field("cover", "Months of cover", 6, "3 is a floor; see the guide below.", step="1", mn="1", mx="24") +
+        field("current", "Saved so far", 4000, step="100") +
+        field("contribution", "Monthly contribution", 400, step="25") +
+        field("apy", "Savings APY", "4.00", "Where the fund will sit.", step="0.01", mx="25"))
+    return tool_page(
+        "/calculators/emergency-fund/", "Emergency Fund Calculator: How Much Should You Have?",
+        "Free emergency fund calculator: work out 3, 6 or 12 months of essential costs, how far you are from it, when you'll get there, and what it earns in savings.",
+        "Emergency fund calculator",
+        "How much you need, how far away you are, and when you'll get there.",
+        tool,
+        ["An emergency fund should cover <b>3 to 6 months of essential expenses</b> — the costs you'd still have to pay if "
+         "your income stopped — and more if your income is irregular or you support others. It isn't a percentage of salary; "
+         "it's your essential monthly spending times the months of cover you need.",
+         f"On essential costs of {money(sum([1600, 500, 250, 350, 200, 150, 150]))}/month, six months is "
+         f"<b>{money(ef['target'])}</b>. From {money(4000)} saved and {money(400)} a month at 4% APY, you'd reach it in "
+         f"{ef['monthsToTarget']} months — and the finished fund would earn about {money(ef['yearlyInterestAtTarget'])} a year."],
+        f"""
+<h2>How many months of cover you need</h2>
+<div class="tw"><table><thead><tr><th>Months</th><th>Usually right when…</th></tr></thead><tbody>
+<tr><td>3</td><td>Two steady incomes, no dependents, skills that are quick to re-hire</td></tr>
+<tr><td>6</td><td>One income, or dependents, or a mortgage — the most common recommendation</td></tr>
+<tr><td>9–12</td><td>Self-employed, commission-based, seasonal work, a single income supporting a family, or a specialised job that takes longer to replace</td></tr>
+<tr><td>12+</td><td>Near retirement, chronic health costs, or a small business owner whose household and business cash overlap</td></tr>
+</tbody></table></div>
+
+<h2>What counts as an essential expense</h2>
+<p>Only what you would still pay if your income stopped tomorrow: housing, food, utilities, transport to look for work, insurance, minimum debt payments and genuine necessities. Leave out subscriptions, eating out, travel and extra debt payments — you'd cut those first. Using your full spending overstates the target and makes it feel unreachable.</p>
+
+<h2>Where to keep it</h2>
+<ul>
+<li><b>A high-yield savings account</b> is the standard answer: FDIC-insured, available within a day or two, and earning interest. At the FDIC national average savings rate of {NAT['savings']:.2f}% ({NAT_ASOF}), a {money(ef['target'])} fund earns about {money(ef['target'] * NAT['savings'] / 100)} a year; at 4% it earns {money(ef['yearlyInterestAtTarget'])}.</li>
+<li><b>Not a CD,</b> unless it's a small slice in a <a href="/calculators/cd-ladder/">ladder</a> — the early-withdrawal penalty defeats the purpose.</li>
+<li><b>Not a brokerage account.</b> Emergencies and market falls tend to arrive together, and you'd be forced to sell low.</li>
+<li><b>A HELOC is a backup, not a fund.</b> Banks can freeze or cut home-equity lines in a downturn — exactly when you'd reach for one — and it's borrowing, not savings.</li>
+</ul>
+
+<h2>Building it</h2>
+<ol>
+<li>Aim first for one month of essentials — it covers most car repairs and medical bills.</li>
+<li>Automate a transfer on payday into a separate savings account, so it isn't mixed with spending money.</li>
+<li>Send windfalls — tax refunds, bonuses — straight to it until you reach the target.</li>
+<li>Refill it after you use it before going back to other goals.</li>
+</ol>
+
+<h2>Rental property owners</h2>
+<p>Keep a separate reserve per property, typically 3–6 months of its costs (mortgage, taxes, insurance, maintenance), plus a capital-expenditure fund for roofs, boilers and appliances. Vacancies and repairs don't wait for your personal fund to recover.</p>
+""",
+        [("How much should I have in my emergency fund?",
+          "Three to six months of essential expenses for most people; nine to twelve if your income is irregular, you're "
+          "self-employed, or you're the only earner supporting a family."),
+         ("Is $10,000 too much for an emergency fund?",
+          "Only if it's more than about six to twelve months of your essential costs. For someone spending $3,000 a month on "
+          "essentials, $10,000 is just over three months — reasonable, not excessive."),
+         ("Is $50,000 too much for an emergency fund?",
+          "It depends on your costs. At $4,000 a month in essentials it's about a year — sensible if your income is irregular, "
+          "more than most salaried people need. Money above your target could go to higher-returning goals."),
+         ("Where should I keep my emergency fund?",
+          "In a separate, FDIC-insured high-yield savings account: safe, reachable in a day or two, and earning interest. Not a "
+          "CD (penalty) and not investments (market risk)."),
+         ("Can a HELOC be my emergency fund?",
+          "It can be a backup, but not the fund itself. Lenders can freeze or reduce home-equity lines during downturns, and "
+          "it's debt you'd have to repay with interest.")],
+        "Emergency fund",
+        [webapp("Emergency Fund Calculator", "/calculators/emergency-fund/",
+                "Works out an emergency fund target from essential monthly costs, the gap to it, and the time to reach it at a savings APY.")])
+
+
+# --- Tier 1: simple interest calculator (24,000/mo) --------------------------
+
+def simple_interest_calc():
+    tool = tool_shell("simple", "Simple interest calculator",
+        field("principal", "Principal", 10000, step="100") +
+        field("rate", "Annual interest rate", 5, "%", step="0.01", mx="100") +
+        field("time", "Time", 3, step="0.5") +
+        '<div class="f"><label for="unit">Unit</label><select id="unit"><option value="years" selected>Years</option>'
+        '<option value="months">Months</option><option value="days">Days</option></select></div>')
+    rows = "".join(
+        f"<tr><td>{y}</td><td class='n'>{money(R.simple_interest(10000, 0.05, y), 2)}</td>"
+        f"<td class='n'>{money(10000 * (1.05 ** y - 1), 2)}</td>"
+        f"<td class='n'>{money(10000 * (1.05 ** y - 1) - R.simple_interest(10000, 0.05, y), 2)}</td></tr>"
+        for y in (1, 3, 5, 10, 20, 30))
+    return tool_page(
+        "/calculators/simple-interest/", "Simple Interest Calculator: I = P × r × t",
+        "Free simple interest calculator using I = P × r × t, in years, months or days — with the compound-interest figure beside it so you can see the difference.",
+        "Simple interest calculator",
+        "I = P × r × t, worked out for you — with the compound figure alongside.",
+        tool,
+        ["<b>Simple interest = principal × rate × time</b> (I = P × r × t). On $1,000 at 5% for 3 years that is "
+         "1,000 × 0.05 × 3 = <b>$150</b>. Interest is paid only on the original amount, never on earlier interest.",
+         "Savings accounts and CDs pay <em>compound</em> interest instead, which earns interest on interest. The calculator "
+         "shows both, so you can see how much compounding adds."],
+        f"""
+<h2>The formula</h2>
+<div class="formula">I = P × r × t &nbsp;&nbsp;&nbsp; A = P + I = P(1 + rt)</div>
+<ul>
+<li><b>P</b> — principal, the starting amount</li>
+<li><b>r</b> — annual rate as a decimal (5% → 0.05)</li>
+<li><b>t</b> — time in years (18 months → 1.5; 90 days → 90 ÷ 365)</li>
+</ul>
+
+<h2>Simple vs compound, on $10,000 at 5%</h2>
+<div class="tw"><table><thead><tr><th>Years</th><th class="n">Simple</th><th class="n">Compound (yearly)</th><th class="n">Compounding adds</th></tr></thead><tbody>{rows}</tbody></table></div>
+<p>Over one year they're identical. After that the gap widens every year — by year 30, compound interest earns more than double. That growing gap is why the rate on long-term savings matters so much, and why debt that compounds gets expensive.</p>
+
+<h2>Where simple interest is actually used</h2>
+<ul>
+<li><b>Many auto loans and some personal loans</b> — interest accrues on the outstanding principal only.</li>
+<li><b>Treasury bills</b> and some short-term notes, quoted on a simple or discount basis.</li>
+<li><b>Per-diem interest</b> on a loan payoff or a late payment.</li>
+<li><b>Not savings accounts or CDs,</b> which compound — use the <a href="/">HYSA calculator</a> or <a href="/calculators/cd-calculator/">CD calculator</a> for those.</li>
+</ul>
+""",
+        [("How do you calculate simple interest?",
+          "Multiply the principal by the annual rate (as a decimal) by the time in years: I = P × r × t. $1,000 at 5% for 3 years is $150."),
+         ("What is 4% interest on $10,000?",
+          "$400 a year in simple interest. Compounded yearly for several years it grows faster: $1,698.59 over 4 years versus $1,600 simple."),
+         ("What is the difference between simple and compound interest?",
+          "Simple interest is paid only on the original principal. Compound interest is also paid on interest already earned, so "
+          "it grows faster the longer the money stays in."),
+         ("How do you calculate simple interest for months or days?",
+          "Convert time to years first: divide months by 12 or days by 365, then apply I = P × r × t.")],
+        "Simple interest",
+        [webapp("Simple Interest Calculator", "/calculators/simple-interest/",
+                "Simple interest calculator (I = P × r × t) with a compound-interest comparison.")])
+
+
+# --- Tier 3: CD ladder builder ------------------------------------------------
+
+def cd_ladder_calc():
+    L = R.ladder(20000, [(12, 0.04), (24, 0.039), (36, 0.038), (48, 0.037), (60, 0.036)])
+    tool = tool_shell("ladder", "CD ladder calculator",
+        field("total", "Total to invest", 20000, step="1000") +
+        field("rungs", "Number of rungs", 5, step="1", mn="2", mx="10", mode="numeric") +
+        field("step", "Months between rungs", 12, "12 for a classic 1–5 year ladder; 3 for a short ladder.", step="1", mn="1", mx="24", mode="numeric") +
+        field("apy", "APY of the shortest rung", "4.00", step="0.01", mx="25") +
+        field("slope", "APY change per rung", "-0.10", "Negative if longer CDs pay less, as they currently do on average.", step="0.05", mn="-2", mx="2", wide=True))
+    return tool_page(
+        "/calculators/cd-ladder/", "CD Ladder Calculator: Build a CD Ladder",
+        "Free CD ladder calculator: split money across CDs that mature in turn, see each rung's interest, the blended APY and how often cash comes free.",
+        "CD ladder calculator",
+        "Split money across CDs that mature in turn, so some is always about to come free.",
+        tool,
+        ["A <b>CD ladder</b> splits one sum across several CDs with staggered terms — say 1, 2, 3, 4 and 5 years. One rung "
+         "matures each year; you reinvest it at the long end. You get regular access and a blend of short- and long-term rates.",
+         f"$20,000 across five rungs from 1 to 5 years, at 4.00% falling 0.10 points per rung, earns "
+         f"<b>{money(L['totalInterest'])}</b> on the first cycle at a blended {pct(L['blendedApy'])} APY."],
+        f"""
+<h2>How a ladder works</h2>
+<ol>
+<li>Divide the total into equal rungs — five rungs of $4,000 in the example.</li>
+<li>Buy CDs of staggered terms: 1, 2, 3, 4 and 5 years.</li>
+<li>When the 1-year CD matures, reinvest it in a new 5-year CD. Next year, do the same with the next rung.</li>
+<li>After one cycle every rung is a 5-year CD, but one still matures each year.</li>
+</ol>
+
+<h2>When a ladder helps — and when it doesn't</h2>
+<ul>
+<li><b>It helps</b> when long CDs pay clearly more than short ones: you collect the long rate while keeping yearly access.</li>
+<li><b>It helps</b> if you're unsure where rates are going — you're never all-in at one moment's rate.</li>
+<li><b>It helps less right now.</b> On the FDIC national averages ({NAT_ASOF}) a 12-month CD pays {NAT['cd_12m']:.2f}% and a 60-month CD only {NAT['cd_60m']:.2f}% — longer rungs pay <em>less</em>. With an inverted curve like that, a ladder mostly buys rate certainty, not extra yield.</li>
+<li><b>It isn't an emergency fund.</b> Access is scheduled, not on demand — keep your <a href="/calculators/emergency-fund/">emergency fund</a> in savings.</li>
+<li><b>It takes admin.</b> If you won't actually roll each rung on time, a single <a href="/">high-yield savings account</a> usually wins in practice.</li>
+</ul>
+""",
+        [("How do you build a CD ladder?",
+          "Split your money into equal parts and buy CDs with staggered terms (for example 1 to 5 years). As each one matures, "
+          "reinvest it in a CD at the longest term, so one rung comes due every year."),
+         ("Is a CD ladder a good idea?",
+          "It's a reasonable way to balance access and rate when long CDs pay more than short ones. When longer CDs pay less, as "
+          "the national averages currently show, a ladder mainly buys rate certainty rather than extra interest."),
+         ("What is a short-term CD ladder?",
+          "A ladder with rungs a few months apart — for example 3, 6, 9 and 12 months — giving access every quarter.")],
+        "CD ladder",
+        [webapp("CD Ladder Calculator", "/calculators/cd-ladder/",
+                "Builds a CD ladder and shows each rung's maturity, interest and the blended APY.")])
+
+
+# --- Tier 2: /rates/ — original, citable data asset --------------------------
+
+def _rates_chart():
+    """Static SVG of the national savings rate against the fed funds rate."""
+    s = dict(SNDR); f = dict(FEDF)
+    dates = sorted(set(s) | set(f))
+    W, H, L, R_, T, B = 720, 300, 44, 12, 14, 34
+    ymax = 6.0
+    x = lambda i: L + (W - L - R_) * i / (len(dates) - 1)
+    y = lambda v: T + (H - T - B) * (1 - v / ymax)
+    def line(src):
+        return " ".join(f"{x(i):.1f},{y(src[d]):.1f}" for i, d in enumerate(dates) if d in src)
+    grid = "".join(f'<line x1="{L}" x2="{W - R_}" y1="{y(v):.1f}" y2="{y(v):.1f}" class="g"/>'
+                   f'<text x="{L - 6}" y="{y(v) + 4:.1f}" text-anchor="end">{v:.0f}%</text>' for v in range(0, 7))
+    years = "".join(f'<text x="{x(i):.1f}" y="{H - 12}" text-anchor="middle">{d[:4]}</text>'
+                    for i, d in enumerate(dates) if d.endswith("-01-01"))
+    return (f'<figure class="chart"><svg viewBox="0 0 {W} {H}" role="img" aria-labelledby="ct cd">'
+            f'<title id="ct">National savings rate vs federal funds rate, {_mon(dates[0])} to {_mon(dates[-1])}</title>'
+            f'<desc id="cd">The fed funds rate rose from near zero in 2022 to {PEAK_FF:.2f}% and stayed there from '
+            f'{_mon(PEAK_FROM)} to {_mon(PEAK_TO)}. The national average savings rate peaked at only {PEAK_SAV:.2f}%.</desc>'
+            '<style>text{font:11px system-ui,sans-serif;fill:currentColor;opacity:.75}.g{stroke:currentColor;opacity:.12}'
+            '.ff{fill:none;stroke:#b4531f;stroke-width:2.2}.sv{fill:none;stroke:#1f6f5c;stroke-width:2.8}</style>'
+            f'{grid}{years}<polyline class="ff" points="{line(f)}"/><polyline class="sv" points="{line(s)}"/></svg>'
+            '<figcaption><span style="color:#b4531f">■</span> Effective federal funds rate &nbsp; '
+            '<span style="color:#1f6f5c">■</span> National average savings rate (FDIC)</figcaption></figure>')
+
+
+def rates_page():
+    s = dict(SNDR); f = dict(FEDF)
+    last_s, last_f = SNDR[-1], FEDF[-1]
+    now_pass = last_s[1] / last_f[1]
+    (SITE / "data").mkdir(parents=True, exist_ok=True)
+    rows = ["date,savings_national_rate,effective_fed_funds"] + [
+        f"{d},{s.get(d, '')},{f.get(d, '')}" for d in sorted(set(s) | set(f))]
+    (SITE / "data" / "savings-rate-vs-fed-funds.csv").write_text("\n".join(rows) + "\n")
+    snap = [d for d in sorted(s) if d.endswith("-01-01")] + [last_s[0]]
+    snap_rows = "".join(f"<tr><td>{_mon(d)}</td><td class='n'>{s[d]:.2f}%</td>"
+                        f"<td class='n'>{(f'{f[d]:.2f}%' if d in f else '—')}</td></tr>" for d in snap)
+    label = {"savings": "Savings", "interest_checking": "Interest checking", "money_market": "Money market",
+             **{f"cd_{m}m": f"{m}-month CD" for m in (1, 3, 6, 12, 24, 36, 48, 60)}}
+    nat_rows = "".join(f"<tr><td>{label[k]}</td><td class='n'>{v:.2f}%</td><td class='n'>{money(10000 * v / 100, 2)}</td></tr>"
+                       for k, v in NAT.items())
+    ans = [f"The <b>national average savings account rate is {NAT['savings']:.2f}% APY</b> (FDIC, {NAT_ASOF}). "
+           f"On $10,000 that is {money(100 * NAT['savings'], 2)} a year. Money market accounts average "
+           f"{NAT['money_market']:.2f}% and 12-month CDs {NAT['cd_12m']:.2f}%.",
+           f"That average barely follows the Fed. From {_mon(PEAK_FROM)} to {_mon(PEAK_TO)} the fed funds rate sat at "
+           f"{PEAK_FF:.2f}%, yet the national savings rate peaked at {PEAK_SAV:.2f}% — about {PASS_THROUGH * 100:.0f}% "
+           "of the Fed's rate reached the average saver. High-yield accounts are the exception, not the norm."]
+    body = f"""<h1>Savings account interest rates: the national average, charted</h1>
+<p class="lede">What US banks actually pay on savings, money market accounts and CDs — and how little of the Fed's rate reaches savers.</p>
+{answer_block(ans)}
+<h2>Savings rate vs the Fed, {_mon(SNDR[0][0])} to {_mon(last_s[0])}</h2>
+{_rates_chart()}
+<p>The Federal Reserve raised its policy rate from near zero in March 2022 to {PEAK_FF:.2f}% by mid-2023. Banks passed almost none of it to ordinary savings accounts: the national average rose from {SNDR[0][1]:.2f}% to {PEAK_SAV:.2f}%. As of {_mon(last_s[0])} it is {last_s[1]:.2f}% against a fed funds rate of {last_f[1]:.2f}% ({_mon(last_f[0])}) — a pass-through of about {now_pass * 100:.0f}%.</p>
+<p class="fact">The gap is the reason high-yield savings accounts exist: an online bank paying close to the Fed's rate is paying roughly ten times the average.</p>
+<div class="tw"><table><thead><tr><th>Month</th><th class="n">National savings rate</th><th class="n">Effective fed funds</th></tr></thead><tbody>{snap_rows}</tbody></table></div>
+<p><a href="/data/savings-rate-vs-fed-funds.csv" download>Download the full monthly series (CSV)</a> · Sources: FDIC national savings rate via <a href="https://fred.stlouisfed.org/series/SNDR" rel="noopener">FRED SNDR</a>; <a href="https://fred.stlouisfed.org/series/FEDFUNDS" rel="noopener">FRED FEDFUNDS</a>. The FDIC's current methodology begins in April 2021, so the series starts there rather than splicing two methods together.</p>
+
+<h2>Current national average rates by account type</h2>
+<div class="tw"><table><thead><tr><th>Account</th><th class="n">National APY</th><th class="n">A year on $10,000</th></tr></thead><tbody>{nat_rows}</tbody></table></div>
+<p class="hint">Source: {FDIC_LINK}, as of {NAT_ASOF}. Deposit-weighted across insured banks and credit unions; savings and checking at the $2,500 tier, money market and CDs averaging the $10,000 and $100,000 tiers.</p>
+
+<h2>How to read these numbers</h2>
+<ul>
+<li><b>They are averages, not offers.</b> They include large branch banks paying close to zero. What you can get is usually much higher; enter it in the <a href="/">HYSA calculator</a>.</li>
+<li><b>The CD curve is inverted.</b> 12-month CDs pay more than 5-year CDs, which signals that banks expect rates to fall. See the <a href="/calculators/cd-calculator/">CD calculator</a>.</li>
+<li><b>Savings rates are variable.</b> A HYSA rate can be cut the day after the Fed cuts; a CD rate is fixed for the term.</li>
+</ul>
+<p>This page is regenerated from the source files on each build; the "as of" date above is the date of the data, not of the page.</p>
+{DISCLAIMER}
+"""
+    qs = [("What is the average interest rate on a savings account?",
+           f"{NAT['savings']:.2f}% APY, the FDIC national average as of {NAT_ASOF}. High-yield savings accounts at online banks commonly pay several times that."),
+          ("What is a good interest rate for a savings account?",
+           "Anything well above the national average is good relative to the market. The practical test is whether it beats inflation after tax; the calculator's tax and inflation fields show that."),
+          ("Why are savings rates so low when the Fed rate is high?",
+           f"Banks set savings rates themselves and most have kept them low: when the fed funds rate was {PEAK_FF:.2f}%, the average savings account paid at most {PEAK_SAV:.2f}%. Online banks compete harder for deposits, which is why their rates track the Fed more closely."),
+          ("Will savings rates go down?",
+           "Savings rates are variable and tend to follow the Fed's policy rate down when it cuts. No one can promise the timing; a CD locks today's rate if you want certainty.")]
+    body += f"<h2>Questions</h2>\n{faq_html(qs)}\n"
+    dataset = {"@context": "https://schema.org", "@type": "Dataset",
+               "name": "US national average savings rate vs effective federal funds rate (monthly)",
+               "description": "Monthly FDIC national average savings rate and effective federal funds rate, "
+                              f"{_mon(SNDR[0][0])} to {_mon(last_s[0])}, with the FDIC's current national rates by product.",
+               "url": URL + "/rates/", "temporalCoverage": f"{SNDR[0][0][:7]}/{last_s[0][:7]}",
+               "spatialCoverage": "United States", "isAccessibleForFree": True,
+               "license": "https://creativecommons.org/licenses/by/4.0/",
+               "creator": {"@type": "Organization", "name": NAME, "url": URL},
+               "isBasedOn": ["https://fred.stlouisfed.org/series/SNDR", "https://fred.stlouisfed.org/series/FEDFUNDS",
+                             "https://www.fdic.gov/national-rates-and-rate-caps"],
+               "distribution": {"@type": "DataDownload", "encodingFormat": "text/csv",
+                                "contentUrl": URL + "/data/savings-rate-vs-fed-funds.csv"}}
+    return page("/rates/", "Savings Account Interest Rates Chart: National Average vs the Fed",
+                f"The national average savings rate is {NAT['savings']:.2f}% ({NAT_ASOF}). Chart of savings rates vs the fed funds rate since 2021, plus money market and CD averages.",
+                body, [dataset, faq_schema([(q, strip_tags(a)) for q, a in qs])],
+                crumbs=[("Home", "/"), ("Rates", "/rates/")])
+
+
+# --- Tier 2: learn pages ------------------------------------------------------
+
+def learn_how_mma_works():
+    mm = NAT["money_market"] / 100
+    return learn_page(
+        "/learn/how-money-market-accounts-work/", "How Does a Money Market Account Work? Rates, Fees, Limits",
+        f"A money market account is an insured bank deposit with savings-style interest and checking features. Typical rate: {NAT['money_market']:.2f}% APY. Fees and limits.",
+        "How does a money market account work?",
+        "A savings account with a chequebook attached — and the rate, fees and limits that come with it.",
+        ["A <b>money market account (MMA)</b> is a bank or credit-union deposit account that pays interest like a "
+         "savings account and usually adds some checking features — checks, a debit card, or both. It is FDIC- or "
+         "NCUA-insured to $250,000 per depositor, per institution, per ownership category.",
+         f"The <b>typical money market rate is {NAT['money_market']:.2f}% APY</b>, the FDIC national average as of "
+         f"{NAT_ASOF} — higher than the {NAT['savings']:.2f}% average savings account, but far below what "
+         "high-yield money market accounts at online banks pay."],
+        f"""
+<h2>How it works, step by step</h2>
+<ol>
+<li><b>You deposit money</b> — often with a higher opening minimum than a savings account.</li>
+<li><b>It earns a variable rate.</b> Interest usually compounds daily and is credited monthly. Many banks use tiers: a higher APY on larger balances.</li>
+<li><b>You can spend from it directly</b> with checks or a debit card, or transfer to checking. That access is the main difference from a savings account.</li>
+<li><b>The bank may limit withdrawals.</b> The federal six-a-month limit was removed in 2020, but a bank may still set its own and charge for extra transactions. See <a href="/learn/can-you-withdraw-from-a-hysa/">withdrawal rules</a>.</li>
+</ol>
+
+<h2>Typical money market account interest rate</h2>
+<div class="tw"><table><thead><tr><th>Account</th><th class="n">National average APY</th><th class="n">A year on $10,000</th></tr></thead><tbody>
+<tr><td>Interest checking</td><td class="n">{NAT['interest_checking']:.2f}%</td><td class="n">{money(100 * NAT['interest_checking'], 2)}</td></tr>
+<tr><td>Savings</td><td class="n">{NAT['savings']:.2f}%</td><td class="n">{money(100 * NAT['savings'], 2)}</td></tr>
+<tr><td>Money market</td><td class="n">{NAT['money_market']:.2f}%</td><td class="n">{money(100 * NAT['money_market'], 2)}</td></tr>
+<tr><td>12-month CD</td><td class="n">{NAT['cd_12m']:.2f}%</td><td class="n">{money(100 * NAT['cd_12m'], 2)}</td></tr>
+</tbody></table></div>
+<p class="hint">Source: {FDIC_LINK}, as of {NAT_ASOF}. Averages include large branch banks; see the full <a href="/rates/">rates chart</a>.</p>
+
+<h2>What is a high-yield money market account?</h2>
+<p>The same product at a bank — usually online — that pays well above the national average. "High-yield" is marketing, not a legal category: compare the APY, the minimum balance needed to earn it, and the fees.</p>
+
+<h2>Money market account fees</h2>
+<ul>
+<li><b>Monthly maintenance fee</b>, often waived above a minimum daily balance. On a small balance a fee can wipe out the interest.</li>
+<li><b>Excess-transaction fee</b> if the bank still limits withdrawals.</li>
+<li><b>Check and debit-card fees</b> at some banks — ordering checks, out-of-network ATMs.</li>
+</ul>
+<p>Read the fee schedule before the rate: a $10 monthly fee costs $120 a year, which is more than {money(10000 * mm, 0)} of interest on $10,000 at the national average.</p>
+
+<h2>Money market checking</h2>
+<p>Some banks sell a "money market checking" account — really a checking account that pays a money-market-style rate. Useful if you keep a large everyday balance; compare it with a <a href="/learn/checking-vs-savings/">checking and a separate savings account</a>.</p>
+
+<h2>Account, not fund</h2>
+<p>A money market <em>fund</em> is an investment sold by brokerages. It is not a bank deposit and not FDIC-insured. If your brokerage calls its cash option "money market", it is almost certainly the fund. <a href="/learn/hysa-vs-money-market/">HYSA vs money market</a> compares the account with a high-yield savings account.</p>
+""",
+        [("How much will $10,000 make in a money market account?",
+          f"At the national average of {NAT['money_market']:.2f}% APY, about {money(10000 * mm, 2)} in a year. At 4.00% APY it is $400. "
+          "Enter your bank's rate in the <a href=\"/\">calculator</a> to see any balance and term."),
+         ("What is the typical interest rate for a money market account?",
+          f"{NAT['money_market']:.2f}% APY, the FDIC national average as of {NAT_ASOF}. High-yield money market accounts pay several times that."),
+         ("Can you lose money in a money market account?",
+          "Not from the account itself, up to the FDIC or NCUA limit — it is a bank deposit. You can lose value to fees or inflation. A money market fund is different and is not insured."),
+         ("Is interest on a money market account taxable?",
+          "Yes, as ordinary income in the year it is credited, reported on Form 1099-INT. See <a href=\"/learn/hysa-interest-tax/\">how savings interest is taxed</a>.")],
+        "How money market accounts work")
+
+
+def learn_checking_vs_savings():
+    return learn_page(
+        "/learn/checking-vs-savings/", "Checking vs Savings Account: The Main Differences",
+        "The main differences between a checking and a savings account: what each is for, interest rates, access, limits and fees — with FDIC national average rates.",
+        "Checking vs savings: the main differences",
+        "One is for spending, one is for keeping. Here is what actually separates them.",
+        ["A <b>checking account</b> is for spending: debit card, checks, bill pay and unlimited transactions, "
+         f"usually with little or no interest (the national average for interest checking is {NAT['interest_checking']:.2f}%).",
+         f"A <b>savings account</b> is for money you are keeping: it pays interest ({NAT['savings']:.2f}% on average, "
+         "far more at a high-yield account) but is less convenient to spend from. Most people need both."],
+        f"""
+<h2>Side by side</h2>
+<div class="tw"><table><thead><tr><th></th><th>Checking</th><th>Savings</th></tr></thead><tbody>
+<tr><td>Purpose</td><td>Everyday spending and bills</td><td>Emergency fund, goals</td></tr>
+<tr><td>National average rate</td><td>{NAT['interest_checking']:.2f}% (interest checking)</td><td>{NAT['savings']:.2f}%</td></tr>
+<tr><td>Debit card and checks</td><td>Yes</td><td>Usually not</td></tr>
+<tr><td>Transactions</td><td>Unlimited</td><td>Some banks limit withdrawals</td></tr>
+<tr><td>Insurance</td><td>FDIC / NCUA to $250,000</td><td>FDIC / NCUA to $250,000</td></tr>
+</tbody></table></div>
+<p class="hint">Rates: {FDIC_LINK}, as of {NAT_ASOF}.</p>
+
+<h2>What is a traditional savings account?</h2>
+<p>The standard savings account at a branch bank. It is convenient — same bank, same app, instant transfers — but pays around the national average of {NAT['savings']:.2f}%: {money(100 * NAT['savings'], 2)} a year on $10,000. A <a href="/learn/what-is-a-hysa/">high-yield savings account</a> is the same product with a higher rate, usually at an online bank, at the cost of one-to-three-day transfers.</p>
+
+<h2>How much to keep in each</h2>
+<ul>
+<li><b>Checking:</b> a month or so of spending plus a buffer against overdrafts. Anything more earns next to nothing.</li>
+<li><b>Savings:</b> your emergency fund and near-term goals. The <a href="/calculators/emergency-fund/">emergency fund calculator</a> sizes it; <a href="/learn/how-much-to-keep-in-a-hysa/">how much to keep in a HYSA</a> covers the rest.</li>
+</ul>
+
+<h2>Where a money market account fits</h2>
+<p>Between the two: savings-style interest with some checking features. <a href="/learn/how-money-market-accounts-work/">How money market accounts work</a>.</p>
+""",
+        [("What are the main differences between a checking and savings account?",
+          "Checking is built for spending — debit card, checks, unlimited transactions, little interest. Savings is built for keeping — it pays interest but is less convenient to spend from, and some banks limit withdrawals."),
+         ("Should I keep my money in checking or savings?",
+          "Keep what you will spend this month in checking and the rest in savings, where it earns interest. Both are insured to the same limits."),
+         ("Can I have a checking and savings account at different banks?",
+          "Yes. Many people keep checking at a branch bank and savings at an online bank for the higher rate, and link the two for transfers.")],
+        "Checking vs savings")
+
+
+def learn_hysa_pros_cons():
+    tax, infl, apy = 0.24, 0.03, 0.04
+    after = apy * (1 - tax)
+    real = (1 + after) / (1 + infl) - 1
+    return learn_page(
+        "/learn/hysa-pros-and-cons/", "High-Yield Savings Account Pros and Cons (and Real Risks)",
+        "The advantages and disadvantages of a high-yield savings account: rate, safety and access against variable rates, tax, inflation and transfer delays.",
+        "High-yield savings accounts: pros, cons and risks",
+        "What you get, what you give up, and the risks that are real versus the ones that are not.",
+        ["<b>Pros:</b> a much higher rate than a traditional savings account, FDIC insurance to $250,000, and access "
+         "to your money within a few days with no penalty.",
+         "<b>Cons:</b> the rate is variable, interest is taxed as ordinary income, inflation can erase most of the "
+         "real return, and transfers out are slower than at your main bank."],
+        f"""
+<h2>Advantages</h2>
+<ul>
+<li><b>Rate.</b> The national average savings rate is {NAT['savings']:.2f}% ({NAT_ASOF}); high-yield accounts pay many times that.</li>
+<li><b>Safety.</b> A deposit at an FDIC-insured bank is covered to $250,000 per depositor, per bank, per ownership category. No market risk: the balance cannot fall.</li>
+<li><b>Access.</b> Unlike a <a href="/calculators/cd-calculator/">CD</a>, there is no penalty for taking money out.</li>
+<li><b>Simplicity.</b> Usually no minimum and no monthly fee.</li>
+</ul>
+
+<h2>Disadvantages</h2>
+<ul>
+<li><b>Variable rate.</b> The bank can cut it at any time, and usually does when the Fed cuts. A CD locks a rate; a HYSA does not.</li>
+<li><b>Tax.</b> Interest is taxed as ordinary income each year, even if you leave it in the account.</li>
+<li><b>Inflation.</b> After tax, the real return can be close to zero (see below).</li>
+<li><b>Slower access.</b> Transfers to your checking account usually take one to three business days; most HYSAs have no debit card or branch.</li>
+<li><b>Possible withdrawal limits.</b> Some banks still cap withdrawals per month. <a href="/learn/can-you-withdraw-from-a-hysa/">What the rules are</a>.</li>
+<li><b>Teaser and tiered rates.</b> A headline APY may be a promotion, or only apply to part of the balance.</li>
+</ul>
+
+<h2>The disadvantage in numbers</h2>
+<p>At {pct(apy)} APY, a 24% federal bracket leaves {pct(after)} after tax. With 3% inflation, the real, after-tax return is about <b>{pct(real)}</b> a year. A HYSA protects your money from falling in value; it is not built to grow it. Try your own figures in the <a href="/">calculator</a>'s tax and inflation fields.</p>
+
+<h2>High-yield savings account risks, honestly</h2>
+<ul>
+<li><b>The bank failing</b> — covered by FDIC insurance up to the limit. Check the bank on the FDIC's BankFind tool.</li>
+<li><b>Balances above $250,000</b> at one bank in one ownership category are not covered. Split across banks or ownership categories.</li>
+<li><b>Fintech apps.</b> If an app holds your money at a partner bank, FDIC insurance covers the partner bank failing, not the app company failing. Know which bank actually holds the deposit.</li>
+<li><b>Opportunity cost.</b> Money you will not need for many years has historically done better invested — see <a href="/learn/hysa-vs-investing/">HYSA vs investing</a>.</li>
+</ul>
+""",
+        [("What are the disadvantages of a high-yield savings account?",
+          "A variable rate that can be cut at any time, interest taxed as ordinary income, a real return that inflation can erase, and transfers that take one to three business days."),
+         ("Is there any risk with a high-yield savings account?",
+          "Very little to the balance itself if the bank is FDIC-insured and you stay under $250,000 per bank per ownership category. The real risks are the rate falling and inflation."),
+         ("Is a high-yield savings account worth it?",
+          f"For cash you need to keep safe and reachable, usually yes: the national average savings account pays {NAT['savings']:.2f}%, so moving an emergency fund to a high-yield account typically multiplies the interest many times over.")],
+        "HYSA pros and cons")
+
+
+def learn_can_withdraw():
+    return learn_page(
+        "/learn/can-you-withdraw-from-a-hysa/", "Can You Withdraw From a High-Yield Savings Account?",
+        "Yes — you can withdraw from a high-yield savings account at any time without penalty. How transfers work, how long they take, and the Regulation D six-per-month rule.",
+        "Can you withdraw money from a high-yield savings account?",
+        "Yes, whenever you like. What to expect on timing, limits and fees.",
+        ["<b>Yes.</b> You can take money out of a high-yield savings account at any time, and you keep the interest "
+         "already earned. There is no early-withdrawal penalty — that applies to CDs, not savings accounts.",
+         "Withdrawals usually go by transfer to a linked checking account and arrive in one to three business days. "
+         "Some banks still limit the number of withdrawals per month, even though the federal six-per-month rule was "
+         "removed in 2020."],
+        """
+<h2>How to take money out</h2>
+<ol>
+<li><b>Transfer to your linked checking account</b> — the standard route. Initiate it in the app; money typically arrives in one to three business days, sometimes the next day.</li>
+<li><b>Wire transfer</b> — same day at many banks, usually for a fee.</li>
+<li><b>ATM card or check</b> — only if your bank offers one on the savings account. Most online HYSAs do not.</li>
+</ol>
+<p>Plan for the delay: keep a month of spending in checking so an emergency does not wait on a transfer.</p>
+
+<h2>The six-withdrawals-a-month rule (Regulation D)</h2>
+<p>Until 2020, the Federal Reserve's Regulation D limited "convenient" transfers and withdrawals from savings accounts — online, phone, card and similar — to six a month. On <b>April 24, 2020</b>, the Federal Reserve Board removed that limit with an interim final rule (<a href="https://www.federalreserve.gov/newsevents/pressreleases/bcreg20200424a.htm" rel="noopener">Federal Reserve announcement</a>).</p>
+<p>The rule change <em>allows</em> banks to drop the limit; it does not <em>require</em> them to. Some banks still cap savings withdrawals at six a month and charge an excess-transaction fee, or convert an account that is repeatedly over the limit to checking. Your account agreement says which applies.</p>
+
+<h2>Other limits to check</h2>
+<ul>
+<li><b>Daily or monthly transfer caps</b> on how much you can move out electronically.</li>
+<li><b>Minimum balance</b> to keep earning the headline APY or to avoid a fee.</li>
+<li><b>Holds on new deposits</b> — money just transferred in may not be withdrawable for a few days.</li>
+</ul>
+
+<h2>What withdrawing does to your interest</h2>
+<p>Interest stops accruing on the amount you take out, and that is all. How long a balance lasts under regular withdrawals is what the <a href="/calculators/withdrawal/">withdrawal calculator</a> works out.</p>
+""",
+        [("Can you withdraw from a HYSA at any time?",
+          "Yes. There is no penalty, and you keep interest already earned. Some banks limit how many withdrawals you can make each month."),
+         ("How many times can you withdraw from a high-yield savings account?",
+          "There is no federal limit since April 2020, when the Federal Reserve removed Regulation D's six-per-month cap. Your bank may still set its own limit; check the account agreement."),
+         ("How long does it take to withdraw from a high-yield savings account?",
+          "Usually one to three business days by transfer to a linked checking account. A wire can be same-day, usually for a fee."),
+         ("Do you lose interest if you withdraw from a HYSA?",
+          "No. Interest already credited is yours. You simply stop earning on the amount you withdraw.")],
+        "Can you withdraw from a HYSA")
+
+
+def learn_hysa_vs_investing():
+    r5 = R.project(10000, 0.04, "daily", 0, 60)
+    return learn_page(
+        "/learn/hysa-vs-investing/", "HYSA vs Brokerage Account, Roth IRA or 401(k): Where Should Money Go?",
+        "High-yield savings vs a brokerage account, Roth IRA, 401(k) or money market fund: safety, access, tax and time horizon compared, without the sales pitch.",
+        "High-yield savings vs investing",
+        "Not a contest: they do different jobs. The question is which job your money has.",
+        ["A <b>high-yield savings account</b> is for money you need safe and reachable — an emergency fund, or a goal "
+         "within a few years. A <b>brokerage account, Roth IRA or 401(k)</b> is for money you will not need for many years "
+         "and can leave through market falls.",
+         f"The trade: $10,000 at 4.00% APY becomes {money(r5['finalBalance'], 2)} in five years, guaranteed as long as the rate "
+         "holds. Invested, it may become much more or temporarily less — and you cannot know which in advance."],
+        """
+<h2>At a glance</h2>
+<div class="tw"><table><thead><tr><th></th><th>HYSA</th><th>Brokerage account</th><th>Roth IRA</th><th>401(k)</th></tr></thead><tbody>
+<tr><td>Can the balance fall?</td><td>No</td><td>Yes, if invested</td><td>Yes, if invested</td><td>Yes, if invested</td></tr>
+<tr><td>Protection</td><td>FDIC to $250,000</td><td>SIPC (broker failure, not losses)</td><td>Depends on holdings</td><td>Depends on holdings</td></tr>
+<tr><td>Access</td><td>Any time</td><td>Any time (sell first)</td><td>Contributions any time; earnings restricted</td><td>Restricted before 59½</td></tr>
+<tr><td>Tax</td><td>Interest taxed yearly</td><td>Taxed on dividends and gains</td><td>Qualified withdrawals tax-free</td><td>Tax-deferred (or Roth)</td></tr>
+<tr><td>Job</td><td>Emergencies, short-term goals</td><td>Long-term, flexible</td><td>Retirement</td><td>Retirement</td></tr>
+</tbody></table></div>
+
+<h2>HYSA vs brokerage account</h2>
+<p>A brokerage account is a container. Holding cash in it is similar to savings; holding stocks or funds is investing. SIPC protects up to $500,000 (including $250,000 of cash) if the broker fails — it does <em>not</em> protect against investments losing value. Use savings for what you might need in the next few years, and the brokerage for the rest.</p>
+
+<h2>Roth IRA vs high-yield savings account</h2>
+<p>A Roth IRA is a tax wrapper, not an investment: you can even hold cash in one. You can withdraw your <em>contributions</em> at any time without tax or penalty; earnings are restricted until the rules are met. Annual contributions are capped, so an unused year's allowance is gone. That is why many people fill a Roth for the long term and keep the emergency fund in a HYSA, rather than choosing one.</p>
+
+<h2>High-yield savings account vs 401(k)</h2>
+<p>A 401(k) is for retirement. Withdrawals before age 59½ are generally taxable and face an additional 10% tax, with some exceptions. An employer match is an immediate return no savings rate can beat — but it is not an emergency fund.</p>
+
+<h2>Money market fund vs HYSA</h2>
+<p>A money market fund is a low-risk investment fund held at a brokerage; its yield moves with short-term rates, and it is not FDIC-insured. A HYSA is a bank deposit. If your cash sits at a brokerage anyway, a money market fund can be convenient; for an emergency fund, the insured deposit is simpler. See <a href="/learn/hysa-vs-money-market/">HYSA vs money market</a>.</p>
+
+<h2>A simple way to decide</h2>
+<ol>
+<li>Size your emergency fund with the <a href="/calculators/emergency-fund/">emergency fund calculator</a> and keep it in a HYSA.</li>
+<li>Money for goals within about five years: HYSA or <a href="/calculators/cd-ladder/">CDs</a>.</li>
+<li>Money for more than five years away: consider investing, ideally through tax-advantaged accounts first.</li>
+</ol>
+""",
+        [("Is a HYSA better than a brokerage account?",
+          "Neither is better; they do different jobs. A HYSA keeps money safe and reachable. A brokerage account holding investments can grow more over long periods but can fall in value."),
+         ("Should I put money in a Roth IRA or a high-yield savings account?",
+          "Many people do both: the emergency fund in a HYSA, long-term money in a Roth IRA. Roth contributions (not earnings) can be withdrawn at any time, but contribution room is capped each year."),
+         ("Is a money market fund safer than a HYSA?",
+          "A HYSA at an FDIC-insured bank is insured to $250,000; a money market fund is not insured, though it is designed to be low-risk.")],
+        "HYSA vs investing")
+
+
+def learn_how_much_in_hysa():
+    ef = R.emergency_fund([3200], 6, 0, 0, 0.04)
+    return learn_page(
+        "/learn/how-much-to-keep-in-a-hysa/", "How Much Should You Keep in a High-Yield Savings Account?",
+        "How much to keep in a HYSA: your emergency fund plus money for goals within a few years, under the $250,000 FDIC limit. How many accounts you need.",
+        "How much to keep in a high-yield savings account",
+        "Enough to cover emergencies and near-term plans — and less than you might think beyond that.",
+        ["Keep your <b>emergency fund</b> — commonly three to six months of essential expenses — plus money for "
+         "goals in roughly the next few years. Beyond that, long-term money usually belongs in investments.",
+         "There is no maximum, but deposits over <b>$250,000</b> at one bank in one ownership category are not "
+         "FDIC-insured; split larger sums across banks."],
+        f"""
+<h2>Three layers</h2>
+<ol>
+<li><b>Emergency fund.</b> Three months of essentials is a floor; six is common; more if your income is irregular or you are the sole earner. On $3,200 of monthly essentials, six months is {money(ef['target'])}, which earns {money(ef['yearlyInterestAtTarget'])} a year at 4% APY. <a href="/calculators/emergency-fund/">Work out your own number</a>.</li>
+<li><b>Known expenses within a few years</b> — a car, a house deposit, tuition, a wedding. Money you cannot afford to see fall in value.</li>
+<li><b>Nothing much else.</b> Cash you will not need for many years loses ground to inflation after tax. See <a href="/learn/hysa-vs-investing/">HYSA vs investing</a>.</li>
+</ol>
+
+<h2>Is there such a thing as too much?</h2>
+<p>Two limits matter. The first is insurance: $250,000 per depositor, per bank, per ownership category. Joint accounts and certain trust accounts are separate categories, so a couple can insure more at one bank. The second is opportunity cost: the <a href="/learn/hysa-pros-and-cons/">real after-tax return</a> on savings can be close to zero.</p>
+
+<h2>How many high-yield savings accounts should you have?</h2>
+<p>One is enough for most people. Reasons to have more:</p>
+<ul>
+<li><b>Over the insurance limit</b> — a second bank insures the excess.</li>
+<li><b>Separate goals</b> — many banks offer "buckets" or sub-accounts inside one account, which does the same job without extra logins.</li>
+<li><b>Rate chasing</b> — possible, but the gain on a small balance is often a few dollars a year.</li>
+</ul>
+<p>Several accounts at the <em>same</em> bank in the same ownership category share one $250,000 limit.</p>
+""",
+        [("How much money should I keep in a HYSA?",
+          "Your emergency fund — commonly three to six months of essential expenses — plus money for goals in the next few years."),
+         ("How many high-yield savings accounts should I have?",
+          "One is enough for most people. A second bank makes sense if you are above the $250,000 FDIC limit."),
+         ("Is it smart to keep a lot of money in a high-yield savings account?",
+          "It is safe, but after tax and inflation the real return can be close to zero, so money you will not need for many years usually does better invested.")],
+        "How much to keep in a HYSA")
+
+
 if __name__ == "__main__":
     note = parity_summary()
+    PARITY_N = re.search(r"^(\S+) comparisons", note).group(1)
     print("engine:", note)
     for d in SITE.iterdir():
         if d.name not in ("assets",):
             shutil.rmtree(d) if d.is_dir() else d.unlink()
     paths = [home(), calculators_hub(), reverse_calc(), cd_calc(), goal_calc(), withdrawal_calc(),
-             apy_converter(), learn_what_is_apy(), learn_apy_formula(), learn_apy_vs_rate(),
+             apy_converter(), cd_calculator(), emergency_fund_calc(), simple_interest_calc(), cd_ladder_calc(),
+             learn_what_is_apy(), learn_apy_formula(), learn_apy_vs_rate(),
              learn_apr_vs_apy(), learn_what_is_hysa(), learn_money_market(), learn_compounding(),
-             learn_tax(), learn_hub(), answers_hub()]
+             learn_tax(), learn_how_mma_works(), learn_checking_vs_savings(), learn_hysa_pros_cons(),
+             learn_can_withdraw(), learn_hysa_vs_investing(), learn_how_much_in_hysa(),
+             learn_hub(), rates_page(), answers_hub()]
     paths += [answer_page(a) for a in ANSWER_AMOUNTS]
     paths += [glossary(), methodology(note)]
     static_pages()

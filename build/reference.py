@@ -111,6 +111,60 @@ def compare_cd(principal, apy, cd_apy, months, penalty_months=0.0, hysa_drift=0.
     }
 
 
+def simple_interest(principal, rate, years):
+    return principal * rate * years
+
+
+def cd(principal, apy, months, penalty_months=0.0, compounding="daily"):
+    """Independent: value at month k from the closed form P*(1+APY)^(k/12) for
+    whole-period compounding is approximated here by counting whole periods,
+    exactly as a bank posts them — then the penalty is compared month by month."""
+    n = PERIODS[compounding]
+    rper = periodic_rate(apy, n)
+    carry, bal, early, break_even = 0.0, principal, [], None
+    penalty = penalty_months * principal * ((1 + apy) ** (1 / 12) - 1)
+    for k in range(1, int(months) + 1):
+        carry += n / 12.0
+        w = math.floor(carry + 1e-9)
+        carry -= w
+        bal *= (1 + rper) ** w
+        earned = bal - principal
+        if break_even is None and earned >= penalty:
+            break_even = k
+        early.append(bal - min(penalty, bal))
+    return {"maturity": bal, "interest": bal - principal, "penalty": penalty,
+            "breakEvenMonth": break_even, "early": early}
+
+
+def ladder(total, rungs):
+    share = total / len(rungs)
+    vals = [share * (1 + a) ** (m / 12) for m, a in rungs]
+    return {"totalInterest": sum(v - share for v in vals),
+            "blendedApy": sum(a for _, a in rungs) / len(rungs)}
+
+
+def emergency_fund(expenses, months, current, contribution, apy):
+    monthly = sum(max(0, x) for x in expenses)
+    target = monthly * months
+    gap = max(0, target - current)
+    if gap <= 0:
+        m = 0
+    else:
+        bal, carry, rper, m = current, 0.0, periodic_rate(apy, 365), None
+        if contribution <= 0 and rper <= 0:
+            m = None
+        else:
+            for k in range(1, 1201):
+                carry += 365 / 12
+                w = math.floor(carry + 1e-9)
+                carry -= w
+                bal = bal * (1 + rper) ** w + contribution
+                if bal >= target:
+                    m = k
+                    break
+    return {"target": target, "gap": gap, "monthsToTarget": m, "yearlyInterestAtTarget": target * apy}
+
+
 def _self_test():
     """Checks against figures computed by hand or by a third method."""
     ok = True
@@ -164,6 +218,21 @@ def _self_test():
     check("equal rates tie", c["difference"], 0.0, tol=0.02)
     check("break-even equals CD APY", c["breakEvenApy"], 0.045, tol=1e-6)
 
+    # 9. Simple interest: I = Prt.
+    check("simple interest 1000 @5% 3y", simple_interest(1000, 0.05, 3), 150.0)
+    # 10. A CD with no penalty breaks even in month 1; with a 3-month penalty, in month 3.
+    c0 = cd(10000, 0.045, 12, 0)
+    check("cd no penalty breaks even month 1", c0["breakEvenMonth"], 1, tol=0)
+    c3 = cd(10000, 0.045, 12, 3, "monthly")
+    check("cd 3-month penalty breaks even month 3", c3["breakEvenMonth"], 3, tol=0)
+    check("cd maturity = P*(1+APY)", c3["maturity"], 10450.0, tol=0.02)
+    # 11. Ladder of identical rungs has blended APY equal to the rung APY.
+    L = ladder(10000, [(12, 0.04)] * 4)
+    check("ladder of equal rungs", L["blendedApy"], 0.04, tol=1e-12)
+    # 12. Emergency fund target and zero-gap case.
+    ef = emergency_fund([1500, 400, 200], 6, 12600, 0, 0.04)
+    check("emergency fund target", ef["target"], 12600.0)
+    check("emergency fund already met", ef["monthsToTarget"], 0, tol=0)
     print("\nreference self-test:", "PASS" if ok else "FAIL")
     return ok
 
@@ -188,8 +257,32 @@ def sweep():
     return out
 
 
+def sweep2():
+    """Cases for the CD, ladder, simple-interest and emergency-fund functions."""
+    out = {"cd": [], "simple": [], "ladder": [], "ef": []}
+    for P, apy, months, pen, comp in itertools.product(
+            [1000, 25000, 250000], [0.0, 0.0173, 0.045, 0.06], [3, 6, 12, 18, 60],
+            [0, 3, 6, 12], ["daily", "monthly", "quarterly"]):
+        c = cd(P, apy, months, pen, comp)
+        out["cd"].append({"in": [P, apy, months, pen, comp], "maturity": c["maturity"],
+                          "penalty": c["penalty"], "breakEvenMonth": c["breakEvenMonth"]})
+    for P, rt, y in itertools.product([500, 10000, 123456], [0.01, 0.045, 0.2], [0.5, 1, 3, 10]):
+        out["simple"].append({"in": [P, rt, y], "interest": simple_interest(P, rt, y)})
+    for total, rungs in [(10000, [(12, 0.04)] * 4), (50000, [(3, 0.0113), (6, 0.0141), (12, 0.0173), (24, 0.0161), (60, 0.0138)]),
+                         (20000, [(12, 0.045), (24, 0.042), (36, 0.04), (48, 0.039), (60, 0.038)])]:
+        L = ladder(total, rungs)
+        out["ladder"].append({"in": [total, [list(x) for x in rungs]], **L})
+    for exp, mo, cur, con, apy in itertools.product([[1500, 400, 200, 300], [3200, 800, 450, 600, 250]],
+                                                    [3, 6, 9, 12], [0, 5000, 40000], [0, 250, 1000], [0.0, 0.04]):
+        e = emergency_fund(exp, mo, cur, con, apy)
+        out["ef"].append({"in": [exp, mo, cur, con, apy], **e})
+    return out
+
+
 if __name__ == "__main__":
     good = _self_test()
+    with open("/home/claude/hysa/build/sweep2.json", "w") as f:
+        json.dump(sweep2(), f)
     with open("/home/claude/hysa/build/sweep.json", "w") as f:
         json.dump(sweep(), f)
     print(f"wrote sweep.json ({len(sweep())} cases)")

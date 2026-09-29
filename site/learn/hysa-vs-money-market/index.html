@@ -14,7 +14,8 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="alternate" type="application/json" href="/api/summary.json" title="Machine-readable summary">
 <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
-<style>:root{--ink:#10241c;--muted:#4b6158;--bg:#f4f8f5;--card:#fff;--line:#d7e3dc;--accent:#0f6b4f;
+<style>figure.chart{margin:1rem 0}figure.chart svg{width:100%;height:auto;display:block}figure.chart figcaption{font-size:.85rem;opacity:.8;margin-top:.3rem}
+:root{--ink:#10241c;--muted:#4b6158;--bg:#f4f8f5;--card:#fff;--line:#d7e3dc;--accent:#0f6b4f;
 --accent-ink:#fff;--warn:#fff6e0;--warn-ink:#5a4300;--pos:#0f6b4f;--neg:#a63a22;color-scheme:light}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]){--ink:#e6efea;--muted:#9fb3aa;
 --bg:#0b1613;--card:#132420;--line:#24403a;--accent:#63c79e;--accent-ink:#06120e;--warn:#3a2f10;
@@ -85,13 +86,13 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;font-size:14px;color
 footer a{color:var(--muted)}footer p{margin:6px 0}
 code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:.92em}
 .formula{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:14px 0;overflow-x:auto;font-variant-numeric:tabular-nums}
-@media (max-width:560px){.fields{grid-template-columns:1fr}.related ul{grid-template-columns:1fr}
+@media (max-width:560px){.fields{grid-template-columns:1fr}[data-tool=ef] .fields,[data-tool=ladder] .fields,[data-tool=simple] .fields{grid-template-columns:1fr 1fr}[data-tool=ef] .hint{display:none}[data-tool=ef] .fields{align-items:end}.related ul{grid-template-columns:1fr}
 nav.main a{margin-left:10px}}</style>
 <script type="application/ld+json">[{"@context":"https://schema.org","@type":"Organization","name":"HYSA Yield","url":"https://www.hysayield.com","logo":"https://www.hysayield.com/icon-512.png"},{"@context":"https://schema.org","@type":"WebPage","@id":"https://www.hysayield.com/learn/hysa-vs-money-market/#page","url":"https://www.hysayield.com/learn/hysa-vs-money-market/","name":"HYSA vs Money Market Account: Which Is Better?","description":"High-yield savings vs money market accounts: rates, access, minimums and insurance compared \u2014 and why the difference is access, not yield.","inLanguage":"en-US","dateModified":"2026-09-29","isPartOf":{"@type":"WebSite","name":"HYSA Yield","url":"https://www.hysayield.com"},"speakable":{"@type":"SpeakableSpecification","cssSelector":["#answer","h1"]}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.hysayield.com/"},{"@type":"ListItem","position":2,"name":"Learn","item":"https://www.hysayield.com/learn/"},{"@type":"ListItem","position":3,"name":"HYSA vs money market","item":"https://www.hysayield.com/learn/hysa-vs-money-market/"}]},{"@context":"https://schema.org","@type":"Article","headline":"High-yield savings vs money market account","dateModified":"2026-09-29","author":{"@type":"Organization","name":"HYSA Yield","url":"https://www.hysayield.com/about/"},"publisher":{"@type":"Organization","name":"HYSA Yield"}},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Is a money market account better than a high-yield savings account?","acceptedAnswer":{"@type":"Answer","text":"Neither is better on yield alone \u2014 rates are usually close. A money market account adds checks or a debit card, often with a higher minimum. Choose on access."}},{"@type":"Question","name":"Is a money market account FDIC insured?","acceptedAnswer":{"@type":"Answer","text":"A money market account at a bank is, to the standard limits. A money market fund at a brokerage is not."}}]}]</script>
 </head>
 <body>
 <header class="top"><div class="wrap"><a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M5 20V12"/><path d="M10 20V8"/><path d="M15 20V5"/><path d="M20 20V3"/></svg>HYSA Yield</a>
-<nav class="main" aria-label="Main"><a href="/">Calculator</a><a href="/calculators/">Tools</a><a href="/learn/">Learn</a><a href="/methodology/">Method</a></nav></div></header>
+<nav class="main" aria-label="Main"><a href="/">Calculator</a><a href="/calculators/">Tools</a><a href="/learn/">Learn</a><a href="/rates/">Rates</a></nav></div></header>
 <main class="wrap"><p class="crumb"><a href="/">Home</a> / <a href="/learn/">Learn</a> / HYSA vs money market</p><h1>High-yield savings vs money market account</h1>
 <p class="lede">They pay similar rates. The real difference is how you get your money out.</p>
 <div class="answer" id="answer"><p>A <b>money market account</b> and a <b>high-yield savings account</b> usually pay comparable rates and are both FDIC-insured bank deposits. The difference is access: a money market account typically adds checks or a debit card, often in exchange for a higher minimum balance.</p><p>Do not confuse a money market <em>account</em> (a bank deposit) with a money market <em>fund</em> (an investment, not FDIC-insured). They share a name and not much else.</p></div>
@@ -112,6 +113,8 @@ nav.main a{margin-left:10px}}</style>
 <li>If you will never spend from it directly, the extra access is worth nothing and the simpler account wins.</li>
 </ul>
 
+<p>How the account itself works — rates, fees, check-writing and limits — is covered in <a href="/learn/how-money-market-accounts-work/">how money market accounts work</a>.</p>
+
 <h2>Money market funds are different</h2>
 <p>A money market <em>fund</em> is a mutual fund holding short-term debt, bought through a brokerage. It is not a bank deposit and is not FDIC-insured, although historically it has been very stable. It can pay more or less than a savings account. If a brokerage offers "money market" as a cash option, it is usually the fund.</p>
 
@@ -119,7 +122,7 @@ nav.main a{margin-left:10px}}</style>
 <details class="q"><summary>Is a money market account better than a high-yield savings account?</summary><p>Neither is better on yield alone — rates are usually close. A money market account adds checks or a debit card, often with a higher minimum. Choose on access.</p></details><details class="q"><summary>Is a money market account FDIC insured?</summary><p>A money market account at a bank is, to the standard limits. A money market fund at a brokerage is not.</p></details>
 <p class="disc"><b>Not financial advice.</b> This is a calculator, not a recommendation. Savings rates are variable and change without notice, tax treatment depends on your own situation, and the figures here are projections from the numbers you enter. <a href="/disclosures/">How this site makes money and what it is not</a>.</p><nav class="related" aria-labelledby="rel-h"><h2 id="rel-h">Related</h2><ul><li><a href="/learn/what-is-a-hysa/">What is a high-yield savings account</a></li><li><a href="/calculators/cd-vs-hysa/">CD vs HYSA</a></li><li><a href="/glossary/">Glossary</a></li></ul></nav></main>
 <footer><div class="wrap">
-<p><a href="/calculators/">Calculators</a> · <a href="/answers/">Worked examples</a> · <a href="/glossary/">Glossary</a> · <a href="/methodology/">Methodology</a> · <a href="/llms.txt">llms.txt</a></p>
+<p><a href="/calculators/">Calculators</a> · <a href="/answers/">Worked examples</a> · <a href="/rates/">Rates data</a> · <a href="/glossary/">Glossary</a> · <a href="/methodology/">Methodology</a> · <a href="/llms.txt">llms.txt</a></p>
 <p><a href="/about/">About</a> · <a href="/disclosures/">Disclosures</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
 <p>Calculations run entirely in your browser. Nothing you type is sent anywhere or stored.</p>
 <p>© 2026 HYSA Yield. Not financial advice.</p></div></footer>

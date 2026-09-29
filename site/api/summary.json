@@ -4,14 +4,14 @@
  "updated": "2026-09-29",
  "publisher": "Omnia Ventures",
  "what_it_is": "Free high-yield savings calculators; all computation is client-side.",
- "what_it_is_not": "Not financial advice; does not know live bank rates; recommends no products.",
+ "what_it_is_not": "Not financial advice; does not know individual bank rates; recommends no products.",
  "method": {
   "periodic_rate": "(1 + APY)^(1/n) - 1",
   "deposits": "end of each month (ordinary annuity)",
   "tax": "interest * (federal_rate + state_rate), capped at 0.95",
   "real_value": "balance / (1 + inflation)^years",
   "apy_invariance": "a given APY returns exactly that APY over 12 months at any compounding frequency",
-  "verification": "3,840 comparisons over 960 input combinations agree to within 2e-13 relative error, and every property test passes"
+  "verification": "6,474 comparisons over 960 input combinations agree to within 2e-13 relative error, and every property test passes"
  },
  "reference_results": [
   {
@@ -49,5 +49,30 @@
   "https://www.hysayield.com/answers/100000/",
   "https://www.hysayield.com/answers/250000/"
  ],
+ "national_average_rates_percent": {
+  "source": "https://www.fdic.gov/national-rates-and-rate-caps",
+  "as_of": "2026-09-21",
+  "savings": 0.37,
+  "interest_checking": 0.07,
+  "money_market": 0.63,
+  "cd_1m": 0.23,
+  "cd_3m": 1.13,
+  "cd_6m": 1.41,
+  "cd_12m": 1.73,
+  "cd_24m": 1.61,
+  "cd_36m": 1.36,
+  "cd_48m": 1.28,
+  "cd_60m": 1.38
+ },
+ "savings_vs_fed_funds": {
+  "peak_fed_funds": 5.33,
+  "peak_window": [
+   "2023-08-01",
+   "2024-08-01"
+  ],
+  "peak_national_savings": 0.47,
+  "pass_through": 0.088,
+  "csv": "https://www.hysayield.com/data/savings-rate-vs-fed-funds.csv"
+ },
  "engine_source": "https://www.hysayield.com/assets/calc.js"
 }

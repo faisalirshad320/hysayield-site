@@ -1,0 +1,86 @@
+{
+  "method": "LowFruits-style weak-spot filtering + Keyword Insights-style clustering. Ahrefs US, pulled 2026-09-29. Filters: KD <= 10-15, word_count >= 3-4, and serp_domain_rating_top5_min or top10_min <= 15-25 (a weak site already ranks). Every Tier 1 cluster was then SERP-checked by hand; clusters are grouped by shared parent topic (how Google itself groups them). CPC in USD.",
+  "units_spent": "~13,000 Ahrefs units",
+  "shortlist": [
+    {
+      "tier": 1, "page": "/calculators/emergency-fund/", "intent": "utility",
+      "cluster_volume": 7700,
+      "serp_verdict": "STRONGEST. Positions 4-10 are the same syndicated calculator widget copied onto financial-adviser sites at DR 1-7 with 0 referring domains. #1 is DR 32.",
+      "keywords": [["emergency fund calculator",4800,0],["emergency fund amount",1000,0],["how much emergency fund",900,0],["building an emergency fund",500,0],["what is a emergency fund",300,0],["how much is a good emergency fund",200,0],["6 month emergency fund calculator",200,0],["using heloc as emergency fund",150,0],["emergency fund for rental property",100,0],["saving for emergency fund",90,0],["creating an emergency fund",90,0],["whats a good emergency fund amount",60,0],["roth ira emergency fund",60,0],["emergency fund ratio calculator",50,0]]
+    },
+    {
+      "tier": 1, "page": "/calculators/cd-calculator/", "intent": "utility",
+      "cluster_volume": 19350,
+      "serp_verdict": "STRONG. #1 is a DR 23 community bank's vendor template, 0 referring domains, ~6,700 visits/mo. #4, #5, #6, #10 are the same template on other small banks (DR 10-33).",
+      "keywords": [["cd rates calculator",7000,0],["cd account calculator",3500,0],["cd calculator apy",2700,0],["free cd calculator",1500,0],["cd compound interest calculator",1200,0],["3 month cd calculator",1000,0],["bank cd calculator",800,0],["cd yield calculator",600,0],["how to calculate cd rates",350,0],["calculator for cd rates",200,0],["saving cd calculator",200,0],["cd calculator compounded quarterly",150,0],["cd returns calculator",150,0]]
+    },
+    {
+      "tier": 1, "page": "/calculators/simple-interest/", "intent": "utility",
+      "cluster_volume": 24000,
+      "serp_verdict": "WEAK SERP BUT CROWDED. Positions 1, 5, 6, 8, 9, 10 are DR 0-6 clone tool sites. Easy to enter; hard to stand out. Differentiated by the simple-vs-compound comparison.",
+      "keywords": [["simple interest calculator",24000,0]]
+    },
+    {
+      "tier": 2, "page": "/learn/how-money-market-accounts-work/", "intent": "informational",
+      "cluster_volume": 15000,
+      "serp_verdict": "STRONG + INTENT GAP. #2 (DR 11) is about money market FUNDS, the wrong product. Reddit and Quora hold #5, #8, #10. Answered with the FDIC national money market rate.",
+      "keywords": [["how does a money market account work",6700,0],["money market account typical interest rate",4100,0],["how do money market accounts work",2000,0],["typical interest rate for money market account",600,0],["typical interest rate of a money market account",500,2],["money market account fees",500,0],["money market checking",500,0],["what is a high yield money market account",250,0],["interest on money market",150,0]]
+    },
+    {
+      "tier": 2, "page": "/learn/checking-vs-savings/", "intent": "informational",
+      "cluster_volume": 3000,
+      "serp_verdict": "Weak site in top 5 (filter). Adjacent-but-foundational; builds topical authority.",
+      "keywords": [["what are the main differences between a checking and savings account?",1800,9],["what is a traditional savings account",900,0],["what's the difference between a savings and checking account",200,3],["what is a checking vs savings account",100,6]]
+    },
+    {
+      "tier": 2, "page": "/rates/", "intent": "informational + linkable asset",
+      "cluster_volume": 2250,
+      "serp_verdict": "Weak site in top 10 (filter). Built on FRED SNDR and FEDFUNDS plus FDIC national rates — original, citable data.",
+      "keywords": [["savings account interest rates chart",800,0],["what is the average interest rate on a savings account",600,4],["current interest rates on savings accounts",600,3],["current savings account interest rate",250,0]]
+    },
+    {
+      "tier": 2, "page": "/learn/hysa-pros-and-cons/", "intent": "informational",
+      "cluster_volume": 1100,
+      "keywords": [["disadvantages of high-yield savings account",900,0],["pros and cons of high yield savings accounts",150,0],["high yield savings account risks",50,3]]
+    },
+    {
+      "tier": 2, "page": "/learn/can-you-withdraw-from-a-hysa/", "intent": "informational",
+      "cluster_volume": 930,
+      "keywords": [["can you withdraw from a high yield savings account",200,2],["can you take money out of high yield savings account",150,0],["can you withdraw money from a high yield savings account",150,9],["can you withdraw from high yield savings account",80,4],["can you withdraw from hysa",70,6],["can i withdraw from a high yield savings account",60,8],["can you withdraw money from high yield savings account",60,1],["can you take money out of a hysa",60,1],["high yield savings account can you withdraw money",50,8],["can you withdraw from a hysa",50,1]]
+    },
+    {
+      "tier": 2, "page": "/learn/hysa-vs-investing/", "intent": "commercial investigation",
+      "cluster_volume": 570,
+      "keywords": [["hysa vs brokerage account",150,1],["brokerage account vs high yield savings",150,0],["roth ira vs high yield savings account",100,0],["money market fund vs hysa",100,0],["high yield savings account vs 401k",60,0],["high yield savings account vs brokerage account",60,8]]
+    },
+    {
+      "tier": 2, "page": "/learn/how-much-to-keep-in-a-hysa/", "intent": "informational",
+      "cluster_volume": 250,
+      "keywords": [["how much to keep in hysa",150,1],["how many high yield savings accounts should i have",100,2]]
+    },
+    {
+      "tier": 3, "page": "/calculators/cd-ladder/", "intent": "utility",
+      "cluster_volume": 600,
+      "serp_verdict": "Informational head 'what is a cd ladder' (1,100) REJECTED: Bankrate, NerdWallet, Investopedia, Fidelity, Vanguard at DR 85-90. Built only as a tool for the build/create/set-up variants, and to complete the CD cluster.",
+      "keywords": [["how to cd ladder",200,8],["create a cd ladder",150,9],["build a cd ladder",150,10],["how to set up a cd ladder",150,6],["what is a cd ladder strategy",150,0],["short term cd ladder",70,0]]
+    }
+  ],
+  "folded_into_existing_pages": {
+    "/": [["interest calculator savings account",600,0],["calculating interest on savings account",100,0],["calculator high yield savings",60,0],["how to calculate interest for savings account",50,0]],
+    "/learn/hysa-vs-money-market/": [["money market account vs high yield savings account",1300,0],["money market vs hysa",800,0],["mma vs high yield savings",90,0]],
+    "/calculators/withdrawal/": [["savings calculator with withdrawals",350,9],["how long will savings last calculator",150,0]],
+    "/calculators/apy-converter/": [["effective interest rate calculator",1300,5],["daily to annual interest rate calculator",150,0],["interest yield calculator",150,0]],
+    "/learn/what-is-apy/": [["what is apy savings account",1200,0],["what is the difference between apy and dividend rate",100,0]],
+    "/learn/what-is-a-hysa/": [["high yield savings account meaning",800,0],["how does a high yield savings work",600,2],["what is a hysa savings account",250,0],["how do high interest savings accounts work",200,0]]
+  },
+  "rejected": {
+    "loans, mortgages, car loans, credit cards": "Off-topic for a savings site; would dilute topical authority.",
+    "savings bond calculator (11,000, KD 0)": "Needs Treasury redemption-value tables maintained monthly, and TreasuryDirect's own calculator ranks. Candidate for a later dedicated build.",
+    "money market rates (35,000), best HYSA/CD rate listicles": "Require live, maintained bank-rate tables and bank affiliate relationships.",
+    "state HYSA pages (oregon, michigan, hawaii, alabama)": "Thin local listicles without local bank data.",
+    "youth / custodial savings": "Product listicles.",
+    "what is a cd ladder (1,100)": "DR 85-90 SERP — not low fruit.",
+    "HSA, IRA savings": "Different products."
+  },
+  "totals": {"new_pages": 11, "new_cluster_volume_per_month": 74750, "folded_volume_per_month": 5950}
+}

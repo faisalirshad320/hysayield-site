@@ -2,3 +2,4 @@ build/shots/
 build/sweep.json
 __pycache__/
 *.pyc
+build/sweep2.json

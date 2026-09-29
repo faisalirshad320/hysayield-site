@@ -34,9 +34,9 @@ CLUSTERS = {
     "/calculators/cd-vs-hysa/": dict(
         tier="supporting", intent="commercial investigation",
         head=("cd vs hysa", 2300, 1, 2.00),
-        terms=[("cd rates calculator", 7000, 0, 1.30),
-               ("cd calculator apy", 2700, 0, 1.30),
-               ("cd vs high yield savings", 2500, 0, 1.70)],
+        # "cd rates calculator" / "cd calculator apy" moved to /calculators/cd-calculator/
+        # (low-fruit expansion) so the two CD pages do not cannibalise each other.
+        terms=[("cd vs high yield savings", 2500, 0, 1.70)],
     ),
     "/calculators/savings-goal/": dict(
         tier="supporting", intent="utility",
@@ -107,6 +107,113 @@ CLUSTERS = {
                       head=("how much interest will my savings earn", None, None, None), terms=[]),
 }
 
+# --- 1b. Low-fruit expansion (data/lowfruits.json has SERP verdicts) -------
+# CPC not carried here (None); the shortlist file holds it.
+CLUSTERS.update({
+    "/calculators/emergency-fund/": dict(
+        tier="tier1", intent='utility',
+        head=('emergency fund calculator', 4800, 0, None),
+        terms=[('emergency fund amount', 1000, 0, None),
+               ('how much emergency fund', 900, 0, None),
+               ('building an emergency fund', 500, 0, None),
+               ('what is a emergency fund', 300, 0, None),
+               ('how much is a good emergency fund', 200, 0, None),
+               ('6 month emergency fund calculator', 200, 0, None),
+               ('using heloc as emergency fund', 150, 0, None),
+               ('emergency fund for rental property', 100, 0, None),
+               ('saving for emergency fund', 90, 0, None),
+               ('creating an emergency fund', 90, 0, None),
+               ('whats a good emergency fund amount', 60, 0, None),
+               ('roth ira emergency fund', 60, 0, None),
+               ('emergency fund ratio calculator', 50, 0, None)]),
+    "/calculators/cd-calculator/": dict(
+        tier="tier1", intent='utility',
+        head=('cd rates calculator', 7000, 0, None),
+        terms=[('cd account calculator', 3500, 0, None),
+               ('cd calculator apy', 2700, 0, None),
+               ('free cd calculator', 1500, 0, None),
+               ('cd compound interest calculator', 1200, 0, None),
+               ('3 month cd calculator', 1000, 0, None),
+               ('bank cd calculator', 800, 0, None),
+               ('cd yield calculator', 600, 0, None),
+               ('how to calculate cd rates', 350, 0, None),
+               ('calculator for cd rates', 200, 0, None),
+               ('saving cd calculator', 200, 0, None),
+               ('cd calculator compounded quarterly', 150, 0, None),
+               ('cd returns calculator', 150, 0, None)]),
+    "/calculators/simple-interest/": dict(
+        tier="tier1", intent='utility',
+        head=('simple interest calculator', 24000, 0, None),
+        terms=[]),
+    "/learn/how-money-market-accounts-work/": dict(
+        tier="tier2", intent='informational',
+        head=('how does a money market account work', 6700, 0, None),
+        terms=[('money market account typical interest rate', 4100, 0, None),
+               ('how do money market accounts work', 2000, 0, None),
+               ('typical interest rate for money market account', 600, 0, None),
+               ('typical interest rate of a money market account', 500, 2, None),
+               ('money market account fees', 500, 0, None),
+               ('money market checking', 500, 0, None),
+               ('what is a high yield money market account', 250, 0, None),
+               ('interest on money market', 150, 0, None)]),
+    "/learn/checking-vs-savings/": dict(
+        tier="tier2", intent='informational',
+        head=('what are the main differences between a checking and savings account?', 1800, 9, None),
+        terms=[('what is a traditional savings account', 900, 0, None),
+               ("what's the difference between a savings and checking account", 200, 3, None),
+               ('what is a checking vs savings account', 100, 6, None)]),
+    "/rates/": dict(
+        tier="tier2", intent='informational + linkable asset',
+        head=('savings account interest rates chart', 800, 0, None),
+        terms=[('what is the average interest rate on a savings account', 600, 4, None),
+               ('current interest rates on savings accounts', 600, 3, None),
+               ('current savings account interest rate', 250, 0, None)]),
+    "/learn/hysa-pros-and-cons/": dict(
+        tier="tier2", intent='informational',
+        head=('disadvantages of high-yield savings account', 900, 0, None),
+        terms=[('pros and cons of high yield savings accounts', 150, 0, None),
+               ('high yield savings account risks', 50, 3, None)]),
+    "/learn/can-you-withdraw-from-a-hysa/": dict(
+        tier="tier2", intent='informational',
+        head=('can you withdraw from a high yield savings account', 200, 2, None),
+        terms=[('can you take money out of high yield savings account', 150, 0, None),
+               ('can you withdraw money from a high yield savings account', 150, 9, None),
+               ('can you withdraw from high yield savings account', 80, 4, None),
+               ('can you withdraw from hysa', 70, 6, None),
+               ('can i withdraw from a high yield savings account', 60, 8, None),
+               ('can you withdraw money from high yield savings account', 60, 1, None),
+               ('can you take money out of a hysa', 60, 1, None),
+               ('high yield savings account can you withdraw money', 50, 8, None),
+               ('can you withdraw from a hysa', 50, 1, None)]),
+    "/learn/hysa-vs-investing/": dict(
+        tier="tier2", intent='commercial investigation',
+        head=('hysa vs brokerage account', 150, 1, None),
+        terms=[('brokerage account vs high yield savings', 150, 0, None),
+               ('roth ira vs high yield savings account', 100, 0, None),
+               ('money market fund vs hysa', 100, 0, None),
+               ('high yield savings account vs 401k', 60, 0, None),
+               ('high yield savings account vs brokerage account', 60, 8, None)]),
+    "/learn/how-much-to-keep-in-a-hysa/": dict(
+        tier="tier2", intent='informational',
+        head=('how much to keep in hysa', 150, 1, None),
+        terms=[('how many high yield savings accounts should i have', 100, 2, None)]),
+    "/calculators/cd-ladder/": dict(
+        tier="tier3", intent='utility',
+        head=('how to cd ladder', 200, 8, None),
+        terms=[('create a cd ladder', 150, 9, None),
+               ('build a cd ladder', 150, 10, None),
+               ('how to set up a cd ladder', 150, 6, None),
+               ('what is a cd ladder strategy', 150, 0, None),
+               ('short term cd ladder', 70, 0, None)]),
+})
+# Folded into existing pages (secondary terms, no new URL).
+CLUSTERS["/"]["terms"] += [('interest calculator savings account', 600, 0, None), ('calculating interest on savings account', 100, 0, None), ('calculator high yield savings', 60, 0, None), ('how to calculate interest for savings account', 50, 0, None)]
+CLUSTERS["/learn/hysa-vs-money-market/"]["terms"] += [('money market account vs high yield savings account', 1300, 0, None), ('money market vs hysa', 800, 0, None), ('mma vs high yield savings', 90, 0, None)]
+CLUSTERS["/calculators/withdrawal/"]["terms"] += [('savings calculator with withdrawals', 350, 9, None), ('how long will savings last calculator', 150, 0, None)]
+CLUSTERS["/calculators/apy-converter/"]["terms"] += [('effective interest rate calculator', 1300, 5, None), ('daily to annual interest rate calculator', 150, 0, None), ('interest yield calculator', 150, 0, None)]
+CLUSTERS["/learn/what-is-apy/"]["terms"] += [('what is apy savings account', 1200, 0, None), ('what is the difference between apy and dividend rate', 100, 0, None)]
+CLUSTERS["/learn/what-is-a-hysa/"]["terms"] += [('high yield savings account meaning', 800, 0, None), ('how does a high yield savings work', 600, 2, None), ('what is a hysa savings account', 250, 0, None), ('how do high interest savings accounts work', 200, 0, None)]
+
 NAV_LABEL = {
     "/": "HYSA calculator",
     "/calculators/": "All calculators",
@@ -127,6 +234,17 @@ NAV_LABEL = {
     "/methodology/": "Methodology",
     "/answers/": "Worked examples",
     "/learn/": "All guides",
+    "/calculators/cd-calculator/": "CD calculator",
+    "/calculators/cd-ladder/": "CD ladder calculator",
+    "/calculators/emergency-fund/": "Emergency fund calculator",
+    "/calculators/simple-interest/": "Simple interest calculator",
+    "/learn/how-money-market-accounts-work/": "How money market accounts work",
+    "/learn/checking-vs-savings/": "Checking vs savings",
+    "/learn/hysa-pros-and-cons/": "HYSA pros and cons",
+    "/learn/can-you-withdraw-from-a-hysa/": "Can you withdraw from a HYSA?",
+    "/learn/hysa-vs-investing/": "HYSA vs investing",
+    "/learn/how-much-to-keep-in-a-hysa/": "How much to keep in a HYSA",
+    "/rates/": "Savings rates chart",
 }
 
 LINKS = {
@@ -136,9 +254,9 @@ LINKS = {
                       "/calculators/savings-goal/", "/calculators/withdrawal/",
                       "/calculators/apy-converter/"],
     "/calculators/how-much-to-earn/": ["/", "/learn/hysa-interest-tax/", "/answers/", "/calculators/"],
-    "/calculators/cd-vs-hysa/": ["/", "/learn/hysa-vs-money-market/", "/methodology/", "/calculators/"],
-    "/calculators/savings-goal/": ["/", "/calculators/", "/learn/how-hysa-compounding-works/"],
-    "/calculators/withdrawal/": ["/", "/calculators/", "/calculators/how-much-to-earn/"],
+    "/calculators/cd-vs-hysa/": ["/", "/calculators/cd-calculator/", "/calculators/cd-ladder/", "/learn/hysa-vs-money-market/", "/calculators/"],
+    "/calculators/savings-goal/": ["/", "/calculators/emergency-fund/", "/learn/how-hysa-compounding-works/", "/calculators/"],
+    "/calculators/withdrawal/": ["/", "/learn/can-you-withdraw-from-a-hysa/", "/calculators/how-much-to-earn/", "/calculators/"],
     "/calculators/apy-converter/": ["/learn/apy-vs-interest-rate/", "/learn/apy-formula/", "/", "/calculators/"],
     "/learn/what-is-apy/": ["/", "/learn/apy-formula/", "/learn/apy-vs-interest-rate/",
                             "/learn/apr-vs-apy/", "/glossary/"],
@@ -147,14 +265,25 @@ LINKS = {
                                      "/learn/how-hysa-compounding-works/", "/"],
     "/learn/apr-vs-apy/": ["/learn/what-is-apy/", "/learn/apy-vs-interest-rate/", "/glossary/"],
     "/learn/what-is-a-hysa/": ["/", "/learn/hysa-vs-money-market/", "/learn/hysa-interest-tax/",
-                               "/learn/what-is-apy/"],
+                               "/learn/what-is-apy/", "/learn/hysa-pros-and-cons/", "/rates/"],
     "/learn/hysa-vs-money-market/": ["/learn/what-is-a-hysa/", "/calculators/cd-vs-hysa/", "/glossary/"],
     "/learn/how-hysa-compounding-works/": ["/learn/what-is-apy/", "/", "/methodology/"],
     "/learn/hysa-interest-tax/": ["/", "/calculators/how-much-to-earn/", "/learn/what-is-a-hysa/"],
     "/glossary/": ["/", "/learn/what-is-apy/", "/methodology/"],
     "/methodology/": ["/", "/learn/apy-formula/", "/glossary/"],
     "/answers/": ["/", "/calculators/how-much-to-earn/", "/learn/what-is-apy/"],
-    "/learn/": ["/", "/calculators/", "/glossary/", "/answers/"],
+    "/learn/": ["/", "/calculators/", "/glossary/", "/answers/", "/rates/"],
+    "/calculators/cd-calculator/": ["/calculators/cd-vs-hysa/", "/calculators/cd-ladder/", "/rates/", "/"],
+    "/calculators/cd-ladder/": ["/calculators/cd-calculator/", "/calculators/cd-vs-hysa/", "/rates/"],
+    "/calculators/emergency-fund/": ["/learn/how-much-to-keep-in-a-hysa/", "/calculators/savings-goal/", "/", "/learn/can-you-withdraw-from-a-hysa/"],
+    "/calculators/simple-interest/": ["/learn/how-hysa-compounding-works/", "/", "/learn/apy-formula/"],
+    "/learn/how-money-market-accounts-work/": ["/learn/hysa-vs-money-market/", "/learn/checking-vs-savings/", "/rates/", "/"],
+    "/learn/checking-vs-savings/": ["/learn/what-is-a-hysa/", "/learn/how-money-market-accounts-work/", "/calculators/emergency-fund/"],
+    "/learn/hysa-pros-and-cons/": ["/learn/what-is-a-hysa/", "/learn/can-you-withdraw-from-a-hysa/", "/learn/hysa-interest-tax/", "/"],
+    "/learn/can-you-withdraw-from-a-hysa/": ["/calculators/withdrawal/", "/learn/hysa-pros-and-cons/", "/learn/what-is-a-hysa/"],
+    "/learn/hysa-vs-investing/": ["/learn/how-much-to-keep-in-a-hysa/", "/calculators/emergency-fund/", "/learn/hysa-vs-money-market/"],
+    "/learn/how-much-to-keep-in-a-hysa/": ["/calculators/emergency-fund/", "/learn/hysa-vs-investing/", "/learn/hysa-pros-and-cons/"],
+    "/rates/": ["/", "/calculators/cd-calculator/", "/learn/how-money-market-accounts-work/", "/learn/what-is-a-hysa/"],
 }
 
 # --- 2. Worked-example pages ("how much does $X earn?") ---------------------

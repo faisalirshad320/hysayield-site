@@ -145,6 +145,49 @@ with sync_playwright() as p:
     back = float(page.input_value("#rate"))
     check("convert: APY→rate round-trips", abs((1 + back / 100 / 365) ** 365 - 1 - 0.05) < 1e-6, f"rate {back}")
 
+    # 8. CD calculator — maturity and break-even month match the reference.
+    page.goto(BASE + "/calculators/cd-calculator/")
+    fill(page, "#principal", 10000); fill(page, "#apy", 4.2); fill(page, "#months", 12); fill(page, "#penalty", 3)
+    page.select_option("#compounding", "daily"); t = out_text()
+    rc = R.cd(10000, 0.042, 12, 3, "daily")
+    got = dollars(page.inner_text(".big"))
+    check("cdcalc: maturity matches reference", got is not None and abs(got - rc["maturity"]) < 0.01, f"{got} vs {rc['maturity']:.2f}")
+    check("cdcalc: break-even month matches", f"Month {rc['breakEvenMonth']}" in t, t[:160].replace("\n", " "))
+    check("cdcalc: national-average comparison shown", "FDIC national average for a 12-month CD" in t)
+    fill(page, "#months", 3); fill(page, "#penalty", 12); t = out_text()
+    check("cdcalc: penalty > all interest explained", "larger than <b>all</b>".replace("<b>", "").replace("</b>", "") in t)
+    page.screenshot(path=str(OUT / "cdcalc-mobile.png"))
+
+    # 9. Simple interest — I = Prt.
+    page.goto(BASE + "/calculators/simple-interest/")
+    fill(page, "#principal", 1000); fill(page, "#rate", 5); fill(page, "#time", 3); page.select_option("#unit", "years")
+    out_text()
+    check("simple: $1,000 × 5% × 3y = $150.00", dollars(page.inner_text(".big")) == 150.0, page.inner_text(".big"))
+
+    # 10. CD ladder — total interest matches the reference.
+    page.goto(BASE + "/calculators/cd-ladder/")
+    fill(page, "#total", 20000); fill(page, "#rungs", 5); fill(page, "#step", 12); fill(page, "#apy", 4); fill(page, "#slope", -0.1)
+    out_text()
+    want = R.ladder(20000, [(12 * i, 0.04 - 0.001 * (i - 1)) for i in range(1, 6)])["totalInterest"]
+    got = dollars(page.inner_text(".big"))
+    check("ladder: total interest matches reference", got is not None and abs(got - round(want)) <= 1, f"{got} vs {want:,.2f}")
+
+    # 11. Emergency fund — target and months-to-target match; fully funded handled.
+    page.goto(BASE + "/calculators/emergency-fund/")
+    t = out_text()
+    ef = R.emergency_fund([1600, 500, 250, 350, 200, 150, 150], 6, 4000, 400, 0.04)
+    check("ef: target matches reference", dollars(page.inner_text(".big")) == round(ef["target"]), page.inner_text(".big"))
+    check("ef: months to target matches", f"{ef['monthsToTarget']} months" in t, t[-160:].replace("\n", " "))
+    fill(page, "#current", 100000)
+    check("ef: fully funded message", "fully funded" in out_text())
+    page.screenshot(path=str(OUT / "ef-mobile.png"))
+
+    # 12. Rates page: chart and CSV exist.
+    page.goto(BASE + "/rates/")
+    check("rates: SVG chart rendered with two series", page.locator("figure.chart polyline").count() == 2)
+    csv = page.request.get(BASE + "/data/savings-rate-vs-fed-funds.csv").text().strip().splitlines()
+    check("rates: CSV downloadable", csv[0].startswith("date,") and len(csv) > 60, f"{len(csv)} lines")
+
     # 7. Every page loads with no console errors; static pages render.
     all_pages = sorted({"/" + str(f.parent.relative_to(SITE)).replace(".", "").strip("/") + "/"
                         for f in SITE.rglob("index.html")})

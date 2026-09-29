@@ -30,7 +30,9 @@
   // --- share links: inputs round-trip through the query string ----------------
   var KEYS = { principal: "p", apy: "a", deposit: "d", years: "y", compounding: "c", fed: "f", state: "s",
                inflation: "i", target: "t", months: "m", cdapy: "cd", drift: "dr", penalty: "pen",
-               goal: "g", withdrawal: "w", rate: "r", apyin: "ai" };
+               goal: "g", withdrawal: "w", rate: "r", apyin: "ai", unit: "u", time: "tm", total: "tt",
+               rungs: "n", step: "st", slope: "sl", housing: "h1", food: "h2", utilities: "h3", transport: "h4",
+               insurance: "h5", debt: "h6", other: "h7", cover: "cv", current: "cu", contribution: "co" };
   (function loadFromUrl() {
     var q = new URLSearchParams(location.search);
     Object.keys(KEYS).forEach(function (id) {
@@ -202,6 +204,86 @@
         $("compounding").value + "</p><div class=\"stats\">" + stat("Difference", ((apy - rate) * 10000).toFixed(1) + " basis points") +
         stat("On $10,000 in a year", money(10000 * apy, true)) + "</div>";
     }
+  };
+
+  // --- the four low-fruit tools ------------------------------------------------
+  render.cdcalc = function () {
+    var o = { principal: Math.max(0, num("principal", 10000)), apy: Math.max(0, num("apy", 4.2)) / 100,
+              months: Math.max(1, Math.round(num("months", 12))), compounding: $("compounding").value,
+              penaltyMonths: Math.max(0, num("penalty", 3)),
+              fedRate: Math.max(0, num("fed", 0)) / 100, stateRate: Math.max(0, num("state", 0)) / 100 };
+    var apyPct = num("apy", 4.2);
+    err.textContent = apyPct > 15 ? "That APY is far above any current CD rate — check the figure." : "";
+    var r = C.cd(o);
+    var nat = window.HYSA_NAT, natLine = "";
+    if (nat) {
+      var terms = [1, 3, 6, 12, 24, 36, 48, 60], k = terms.reduce(function (b, t) { return Math.abs(t - o.months) < Math.abs(b - o.months) ? t : b; }, 12);
+      var nr = nat["cd_" + k + "m"];
+      if (nr != null) natLine = '<p class="verdict">The FDIC national average for a ' + k + "-month CD is " + nr.toFixed(2) +
+        "%. " + (o.apy * 100 > nr ? "Your rate beats it by " + (o.apy * 100 - nr).toFixed(2) + " points." : "Your rate is below it — shop around.") + "</p>";
+    }
+    var h = '<p class="big">' + money(r.maturity, true) + '</p><p class="biglab">at maturity, after ' + o.months + " months at " + pct(o.apy) + " APY</p>";
+    h += '<div class="stats">' + stat("Interest earned", money(r.interest, true));
+    if (o.fedRate + o.stateRate > 0) h += stat("Interest after tax", money(r.afterTaxInterest, true));
+    h += stat("Early-withdrawal penalty", money(r.penalty, true)) +
+      stat("Break-even month", r.breakEvenMonth ? "Month " + r.breakEvenMonth : "—") + "</div>";
+    h += '<p class="verdict">' + (o.penaltyMonths <= 0 ? "No early-withdrawal penalty entered."
+      : r.breakEvenMonth === null ? "The penalty is larger than <b>all</b> the interest this CD earns over its term — breaking it at any point returns less than you deposited."
+      : r.breakEvenMonth === 1 ? "Even broken in the first month, the interest covers the penalty."
+      : "Break this CD before month " + r.breakEvenMonth + " and you get back <b>less than you deposited</b> — the penalty is larger than the interest earned by then.") + "</p>" + natLine;
+    var rows = r.early.filter(function (x, i) { return i < 3 || (i + 1) % 3 === 0 || i === r.early.length - 1; })
+      .map(function (x) { return "<tr><td>Month " + x.month + '</td><td class="n">' + money(x.interest, true) + '</td><td class="n">' + money(x.walkAway, true) + "</td></tr>"; }).join("");
+    h += '<details class="adv"><summary>If you broke it early</summary><div class="tw"><table><thead><tr><th>Broken at</th><th class="n">Interest so far</th><th class="n">You walk away with</th></tr></thead><tbody>' + rows + "</tbody></table></div></details>";
+    out.innerHTML = h;
+  };
+
+  render.simple = function () {
+    var P = Math.max(0, num("principal", 10000)), rate = Math.max(0, num("rate", 5)) / 100;
+    var unit = $("unit").value, t = Math.max(0, num("time", 3)), years = unit === "months" ? t / 12 : unit === "days" ? t / 365 : t;
+    err.textContent = "";
+    var si = C.simpleInterest(P, rate, years), ca = C.compoundOnNominal(P, rate, 1, years), cd = C.compoundOnNominal(P, rate, 365, years);
+    var h = '<p class="big">' + money(si.interest, true) + '</p><p class="biglab">simple interest on ' + money(P) + " at " + pct(rate) + " for " + t + " " + unit + "</p>";
+    h += '<div class="stats">' + stat("Total (principal + interest)", money(si.total, true)) + stat("Per year", money(P * rate, true)) +
+      stat("Compounded yearly instead", money(ca.interest, true)) + stat("Compounded daily instead", money(cd.interest, true)) + "</div>";
+    h += '<p class="verdict">Formula: I = P × r × t = ' + money(P) + " × " + (rate).toFixed(4).replace(/0+$/, "").replace(/\.$/, "") + " × " + (Math.round(years * 10000) / 10000) +
+      " = " + money(si.interest, true) + ". Compounding would add " + money(cd.interest - si.interest, true) + " over the same period.</p>";
+    out.innerHTML = h;
+  };
+
+  render.ladder = function () {
+    var total = Math.max(0, num("total", 20000)), n = Math.max(2, Math.min(10, Math.round(num("rungs", 5))));
+    var step = Math.max(1, Math.round(num("step", 12))), base = Math.max(0, num("apy", 4)) / 100, slope = num("slope", -0.1) / 100;
+    err.textContent = "";
+    var rungs = [];
+    for (var i = 1; i <= n; i++) rungs.push({ months: step * i, apy: Math.max(0, base + slope * (i - 1)) });
+    var L = C.ladder(total, rungs);
+    var h = '<p class="big">' + money(L.totalInterest) + '</p><p class="biglab">interest across ' + n + " rungs of " + money(L.share) + " — a rung matures every " + step + " months</p>";
+    h += '<div class="stats">' + stat("Blended APY", pct(L.blendedApy)) + stat("First cash available", "Month " + L.firstAccessMonths) + stat("Longest rung", rungs[n - 1].months + " months") + "</div>";
+    h += '<div class="tw" style="margin-top:14px"><table><thead><tr><th>Rung</th><th class="n">Term</th><th class="n">APY</th><th class="n">Matures at</th><th class="n">Interest</th></tr></thead><tbody>' +
+      L.rungs.map(function (r, j) { return "<tr><td>" + (j + 1) + '</td><td class="n">' + r.months + ' mo</td><td class="n">' + pct(r.apy) + '</td><td class="n">' + money(r.maturity, true) + '</td><td class="n">' + money(r.interest, true) + "</td></tr>"; }).join("") +
+      "</tbody></table></div>";
+    h += '<p class="verdict">When each rung matures, reinvest it in a new ' + (step * n) + "-month CD. After one full cycle every rung earns the long-term rate, and one still matures every " + step + " months.</p>";
+    out.innerHTML = h;
+  };
+
+  render.ef = function () {
+    var ids = ["housing", "food", "utilities", "transport", "insurance", "debt", "other"];
+    var o = { expenses: ids.map(function (id) { return Math.max(0, num(id, 0)); }), months: Math.max(1, num("cover", 6)),
+              current: Math.max(0, num("current", 0)), monthlyContribution: Math.max(0, num("contribution", 0)),
+              apy: Math.max(0, num("apy", 4)) / 100 };
+    err.textContent = "";
+    var e = C.emergencyFund(o);
+    if (e.monthlyExpenses <= 0) { out.innerHTML = '<p class="verdict">Enter your essential monthly costs above.</p>'; return; }
+    var h = '<p class="big">' + money(e.target) + '</p><p class="biglab">' + o.months + " months of essential costs (" + money(e.monthlyExpenses) + "/month)</p>";
+    h += '<div class="stats">' + stat("You have now", money(e.current)) + stat("Still to save", money(e.gap)) +
+      stat("Months covered today", e.coverageNow.toFixed(1)) + stat("Interest a year at target", money(e.yearlyInterestAtTarget)) + "</div>";
+    var when = "";
+    if (e.gap <= 0) when = "You're fully funded. Anything above the target could be working harder elsewhere.";
+    else if (e.monthsToTarget === null) when = "Add a monthly contribution to see when you'll get there.";
+    else { var d = new Date(); d.setMonth(d.getMonth() + e.monthsToTarget);
+      when = "At " + money(o.monthlyContribution) + " a month you'll be fully funded in <b>" + e.monthsToTarget + " months</b> — around " + d.toLocaleDateString("en-US", { month: "long", year: "numeric" }) + "."; }
+    h += '<p class="verdict">' + when + "</p>";
+    out.innerHTML = h;
   };
 
   function scheduleTable(s) {

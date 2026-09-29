@@ -14,7 +14,8 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="alternate" type="application/json" href="/api/summary.json" title="Machine-readable summary">
 <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
-<style>:root{--ink:#10241c;--muted:#4b6158;--bg:#f4f8f5;--card:#fff;--line:#d7e3dc;--accent:#0f6b4f;
+<style>figure.chart{margin:1rem 0}figure.chart svg{width:100%;height:auto;display:block}figure.chart figcaption{font-size:.85rem;opacity:.8;margin-top:.3rem}
+:root{--ink:#10241c;--muted:#4b6158;--bg:#f4f8f5;--card:#fff;--line:#d7e3dc;--accent:#0f6b4f;
 --accent-ink:#fff;--warn:#fff6e0;--warn-ink:#5a4300;--pos:#0f6b4f;--neg:#a63a22;color-scheme:light}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]){--ink:#e6efea;--muted:#9fb3aa;
 --bg:#0b1613;--card:#132420;--line:#24403a;--accent:#63c79e;--accent-ink:#06120e;--warn:#3a2f10;
@@ -85,13 +86,13 @@ footer{border-top:1px solid var(--line);padding:24px 0 40px;font-size:14px;color
 footer a{color:var(--muted)}footer p{margin:6px 0}
 code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:.92em}
 .formula{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:14px 0;overflow-x:auto;font-variant-numeric:tabular-nums}
-@media (max-width:560px){.fields{grid-template-columns:1fr}.related ul{grid-template-columns:1fr}
+@media (max-width:560px){.fields{grid-template-columns:1fr}[data-tool=ef] .fields,[data-tool=ladder] .fields,[data-tool=simple] .fields{grid-template-columns:1fr 1fr}[data-tool=ef] .hint{display:none}[data-tool=ef] .fields{align-items:end}.related ul{grid-template-columns:1fr}
 nav.main a{margin-left:10px}}</style>
 <script type="application/ld+json">[{"@context":"https://schema.org","@type":"Organization","name":"HYSA Yield","url":"https://www.hysayield.com","logo":"https://www.hysayield.com/icon-512.png"},{"@context":"https://schema.org","@type":"WebPage","@id":"https://www.hysayield.com/answers/5000/#page","url":"https://www.hysayield.com/answers/5000/","name":"How Much Does $5,000 Earn in a High-Yield Savings Account?","description":"At 4.50% APY, $5,000 earns about $18.37 a month and $225 a year. Full table of interest at 0.5% to 5% APY, from 1 month to 10 years.","inLanguage":"en-US","dateModified":"2026-09-29","isPartOf":{"@type":"WebSite","name":"HYSA Yield","url":"https://www.hysayield.com"},"speakable":{"@type":"SpeakableSpecification","cssSelector":["#answer","h1"]}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://www.hysayield.com/"},{"@type":"ListItem","position":2,"name":"Worked examples","item":"https://www.hysayield.com/answers/"},{"@type":"ListItem","position":3,"name":"$5,000","item":"https://www.hysayield.com/answers/5000/"}]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How much interest will $5,000 earn in a year?","acceptedAnswer":{"@type":"Answer","text":"About $225.00 at 4.50% APY, before tax."}},{"@type":"Question","name":"How much does $5,000 earn per month in a high-yield savings account?","acceptedAnswer":{"@type":"Answer","text":"About $18.37 a month at 4.50% APY, before tax."}},{"@type":"Question","name":"How much will $5,000 be worth in 5 years in a HYSA?","acceptedAnswer":{"@type":"Answer","text":"About $6,231 at a steady 4.50% APY with no further deposits. Real rates vary."}}]}]</script>
 </head>
 <body>
 <header class="top"><div class="wrap"><a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M5 20V12"/><path d="M10 20V8"/><path d="M15 20V5"/><path d="M20 20V3"/></svg>HYSA Yield</a>
-<nav class="main" aria-label="Main"><a href="/">Calculator</a><a href="/calculators/">Tools</a><a href="/learn/">Learn</a><a href="/methodology/">Method</a></nav></div></header>
+<nav class="main" aria-label="Main"><a href="/">Calculator</a><a href="/calculators/">Tools</a><a href="/learn/">Learn</a><a href="/rates/">Rates</a></nav></div></header>
 <main class="wrap"><p class="crumb"><a href="/">Home</a> / <a href="/answers/">Worked examples</a> / $5,000</p>
 <h1>How much does $5,000 earn in a high-yield savings account?</h1>
 <p class="lede">Interest on $5,000 at common APYs, from one month to ten years.</p>
@@ -116,7 +117,7 @@ nav.main a{margin-left:10px}}</style>
 <p class="disc"><b>Not financial advice.</b> This is a calculator, not a recommendation. Savings rates are variable and change without notice, tax treatment depends on your own situation, and the figures here are projections from the numbers you enter. <a href="/disclosures/">How this site makes money and what it is not</a>.</p>
 <nav class="related" aria-label="Other amounts"><h2>Other amounts</h2><ul><li><a href="/answers/1000/">How much does $1,000 earn?</a></li><li><a href="/answers/10000/">How much does $10,000 earn?</a></li><li><a href="/answers/25000/">How much does $25,000 earn?</a></li><li><a href="/answers/50000/">How much does $50,000 earn?</a></li><li><a href="/answers/100000/">How much does $100,000 earn?</a></li><li><a href="/answers/250000/">How much does $250,000 earn?</a></li></ul></nav></main>
 <footer><div class="wrap">
-<p><a href="/calculators/">Calculators</a> · <a href="/answers/">Worked examples</a> · <a href="/glossary/">Glossary</a> · <a href="/methodology/">Methodology</a> · <a href="/llms.txt">llms.txt</a></p>
+<p><a href="/calculators/">Calculators</a> · <a href="/answers/">Worked examples</a> · <a href="/rates/">Rates data</a> · <a href="/glossary/">Glossary</a> · <a href="/methodology/">Methodology</a> · <a href="/llms.txt">llms.txt</a></p>
 <p><a href="/about/">About</a> · <a href="/disclosures/">Disclosures</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
 <p>Calculations run entirely in your browser. Nothing you type is sent anywhere or stored.</p>
 <p>© 2026 HYSA Yield. Not financial advice.</p></div></footer>

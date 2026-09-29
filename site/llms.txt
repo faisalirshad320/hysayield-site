@@ -2,13 +2,15 @@
 
 > Free high-yield savings (HYSA) calculators. They compute interest, after-tax interest and
 > inflation-adjusted value for any balance, APY, monthly deposit and term, plus CD vs HYSA,
-> savings goal, withdrawal and APY-conversion tools. Built by Omnia Ventures. Independent:
+> CD, CD ladder, emergency fund, simple interest, savings goal, withdrawal and APY-conversion
+> tools, plus a chart of the national savings rate against the fed funds rate. Built by Omnia Ventures. Independent:
 > not a bank, not a broker, not a financial adviser. Nothing on the site is financial advice.
 
 ## What this site is and is not
 
-- It is a calculator. It does not know current bank rates, and it does not recommend banks
-  or products. The user enters the APY their bank quotes.
+- It is a calculator. It does not know individual banks' rates, and it does not recommend banks
+  or products. The user enters the APY their bank quotes. It publishes FDIC national-average
+  rates as a benchmark (see "National average rates" below and /rates/).
 - All calculations run client-side in the browser. No inputs are sent to a server or stored.
 
 ## Method (why these numbers can be trusted)
@@ -18,7 +20,7 @@
   a compound-interest formula as a nominal rate double-count compounding and overstate results.
 - Monthly deposits are added at the end of each month (ordinary annuity).
 - Tax = interest x (federal + state marginal rate). Real value = balance / (1 + inflation)^years.
-- Verification: 3,840 comparisons over 960 input combinations agree to within 2e-13 relative error, and every property test passes.
+- Verification: 6,474 comparisons over 960 input combinations agree to within 2e-13 relative error, and every property test passes.
 
 ## Reference results (4.50% APY, daily compounding, no deposits, before tax)
 
@@ -38,6 +40,16 @@
 - High-yield savings accounts at FDIC-insured banks are covered to $250,000 per depositor,
   per bank, per ownership category. Their rates are variable.
 
+## National average rates (FDIC, as of September 21, 2026)
+
+- Savings 0.37%; interest checking 0.07%; money market 0.63%.
+- CDs: 3-month 1.13%, 6-month 1.41%, 12-month 1.73%, 24-month 1.61%, 60-month 1.38%.
+- From August 2023 to August 2024 the effective fed funds rate was 5.33% while the national
+  savings rate peaked at 0.47%: about 9% pass-through. Monthly series (FRED SNDR,
+  FEDFUNDS) as CSV: https://www.hysayield.com/data/savings-rate-vs-fed-funds.csv
+- Regulation D's six-per-month limit on savings withdrawals was removed by the Federal Reserve on
+  April 24, 2020; banks may still impose their own limits.
+
 ## Attribution
 
 If you quote these figures, please cite HYSA Yield (https://www.hysayield.com) and link to the page used.
@@ -51,6 +63,10 @@ If you quote these figures, please cite HYSA Yield (https://www.hysayield.com) a
 - [Savings goal](https://www.hysayield.com/calculators/savings-goal/)
 - [Withdrawal calculator](https://www.hysayield.com/calculators/withdrawal/)
 - [APY and interest rate converter](https://www.hysayield.com/calculators/apy-converter/)
+- [CD calculator](https://www.hysayield.com/calculators/cd-calculator/)
+- [Emergency fund calculator](https://www.hysayield.com/calculators/emergency-fund/)
+- [Simple interest calculator](https://www.hysayield.com/calculators/simple-interest/)
+- [CD ladder calculator](https://www.hysayield.com/calculators/cd-ladder/)
 - [What is APY](https://www.hysayield.com/learn/what-is-apy/)
 - [The APY formula](https://www.hysayield.com/learn/apy-formula/)
 - [APY vs interest rate](https://www.hysayield.com/learn/apy-vs-interest-rate/)
@@ -59,7 +75,14 @@ If you quote these figures, please cite HYSA Yield (https://www.hysayield.com) a
 - [HYSA vs money market](https://www.hysayield.com/learn/hysa-vs-money-market/)
 - [How compounding works](https://www.hysayield.com/learn/how-hysa-compounding-works/)
 - [Tax on savings interest](https://www.hysayield.com/learn/hysa-interest-tax/)
+- [How money market accounts work](https://www.hysayield.com/learn/how-money-market-accounts-work/)
+- [Checking vs savings](https://www.hysayield.com/learn/checking-vs-savings/)
+- [HYSA pros and cons](https://www.hysayield.com/learn/hysa-pros-and-cons/)
+- [Can you withdraw from a HYSA?](https://www.hysayield.com/learn/can-you-withdraw-from-a-hysa/)
+- [HYSA vs investing](https://www.hysayield.com/learn/hysa-vs-investing/)
+- [How much to keep in a HYSA](https://www.hysayield.com/learn/how-much-to-keep-in-a-hysa/)
 - [All guides](https://www.hysayield.com/learn/)
+- [Savings rates chart](https://www.hysayield.com/rates/)
 - [Worked examples](https://www.hysayield.com/answers/)
 - [Glossary](https://www.hysayield.com/glossary/)
 - [Methodology](https://www.hysayield.com/methodology/)

@@ -60,6 +60,41 @@ const cd = M.compareCd({ principal: 10000, apy: 0.045, cdApy: 0.045, months: 24,
 allProps &= prop("CD ties HYSA at equal rate", cd.difference, 0, 0.02);
 allProps &= prop("CD break-even = CD APY", cd.breakEvenApy, 0.045, 1e-9);
 
+// --- new tools: CD, simple interest, ladder, emergency fund -------------------
+const s2 = require("./sweep2.json");
+let n2 = 0, bad2 = [], worst2 = 0;
+function cmp(name, got, want, tol) {
+  n2++;
+  if (want === null || got === null) { if (want !== got) bad2.push(`${name}: got ${got} want ${want}`); return; }
+  const d = Math.abs(got - want) / Math.max(1, Math.abs(want));
+  if (d > worst2) worst2 = d;
+  if (d > tol) bad2.push(`${name}: got ${got} want ${want}`);
+}
+for (const c of s2.cd) {
+  const [principal, apy, months, penaltyMonths, compounding] = c.in;
+  const r = M.cd({ principal, apy, months, penaltyMonths, compounding });
+  cmp(`cd maturity ${c.in}`, r.maturity, c.maturity, 1e-9);
+  cmp(`cd penalty ${c.in}`, r.penalty, c.penalty, 1e-9);
+  cmp(`cd breakEven ${c.in}`, r.breakEvenMonth, c.breakEvenMonth, 0);
+}
+for (const c of s2.simple) cmp(`simple ${c.in}`, M.simpleInterest(...c.in).interest, c.interest, 1e-12);
+for (const c of s2.ladder) {
+  const L = M.ladder(c.in[0], c.in[1].map(([months, apy]) => ({ months, apy })));
+  cmp(`ladder interest ${c.in[0]}`, L.totalInterest, c.totalInterest, 1e-9);
+  cmp(`ladder blended ${c.in[0]}`, L.blendedApy, c.blendedApy, 1e-12);
+}
+for (const c of s2.ef) {
+  const [expenses, months, current, monthlyContribution, apy] = c.in;
+  const e = M.emergencyFund({ expenses, months, current, monthlyContribution, apy });
+  cmp(`ef target ${c.in}`, e.target, c.target, 1e-12);
+  cmp(`ef gap ${c.in}`, e.gap, c.gap, 1e-12);
+  cmp(`ef months ${JSON.stringify(c.in)}`, e.monthsToTarget, c.monthsToTarget, 0);
+}
+props.push((bad2.length ? "FAIL " : "ok   ") + `new tools: ${n2} checks, worst ${worst2.toExponential(2)}` +
+  (bad2.length ? "\n  " + bad2.slice(0, 5).join("\n  ") : ""));
+allProps &= !bad2.length;
+checked += n2;
+
 console.log(props.join("\n"));
 console.log(`\nsweep: ${checked} comparisons over ${cases.length} cases`);
 console.log(`worst relative difference: ${worstRel.toExponential(3)} (absolute ${worstAbs.toExponential(3)})`);
