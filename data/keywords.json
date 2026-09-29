@@ -1,0 +1,117 @@
+{
+  "source": "Ahrefs Keywords Explorer, US, pulled 2026-09-29",
+  "note": "CPC values from Ahrefs are in USD cents; divide by 100 for dollars. Volumes are US monthly.",
+  "excluded_and_why": {
+    "high yield savings account (501k, KD 0)": "SERP is NerdWallet/Bankrate/Forbes at DR 90. KD is misleading. Commercial listicle intent we cannot serve without live bank rates.",
+    "best hysa (40k)": "Same. Requires maintained rate tables and bank affiliate relationships.",
+    "[bank] hysa (amex/sofi/ally/chase/marcus...)": "Branded navigational. Users want that bank's page.",
+    "high yield savings account 2026 philippines (1.6k)": "Wrong geography for this build."
+  },
+  "clusters": {
+    "core_tool": {
+      "page": "/",
+      "intent": "utility",
+      "keywords": [
+        ["hysa calculator", 24000, 0, 150],
+        ["savings account interest calculator", 11000, 0, 120],
+        ["simple savings calculator", 5800, 0, 120],
+        ["high-yield savings account calculator", 1400, 0, null],
+        ["apy calculator savings", 2000, 0, 140],
+        ["apy calculator monthly", 1900, 0, 140],
+        ["monthly savings calculator", 1900, 6, 120]
+      ]
+    },
+    "cd_tools": {
+      "page": "/calculators/cd-vs-hysa/",
+      "intent": "utility + commercial investigation",
+      "keywords": [
+        ["cd rates calculator", 7000, 0, 130],
+        ["cd calculator apy", 2700, 0, 130],
+        ["cd vs high yield savings", 2500, 0, 170],
+        ["cd vs hysa", 2300, 1, 200]
+      ]
+    },
+    "withdrawal": {
+      "page": "/calculators/withdrawal/",
+      "intent": "utility",
+      "keywords": [["savings withdrawal calculator", 3200, 18, 100]]
+    },
+    "reverse": {
+      "page": "/calculators/how-much-to-earn/",
+      "intent": "utility",
+      "keywords": [["how much do i need in a hysa to make $1000 a month", null, null, null]]
+    },
+    "apy_education": {
+      "page": "/learn/what-is-apy/",
+      "intent": "informational",
+      "keywords": [
+        ["apy", 50000, 0, 200],
+        ["what is apy", 28000, 5, 170],
+        ["what does apy mean", 12000, 13, 70],
+        ["what does apy stand for", 3800, 0, 80],
+        ["what is apy in banking", 3500, 24, 60],
+        ["apy definition", 1700, 0, 30],
+        ["whats apy", 1700, 0, 170]
+      ]
+    },
+    "apy_formula": {
+      "page": "/learn/apy-formula/",
+      "intent": "informational",
+      "keywords": [["apy formula", 2700, 0, 80]]
+    },
+    "apy_vs_rate": {
+      "page": "/learn/apy-vs-interest-rate/",
+      "intent": "informational",
+      "keywords": [
+        ["apy vs interest rate", 12000, 14, 160],
+        ["interest rate vs apy", 1600, 14, 9]
+      ]
+    },
+    "apr_vs_apy": {
+      "page": "/learn/apr-vs-apy/",
+      "intent": "informational",
+      "keywords": [
+        ["apr vs apy", 8500, 0, 5],
+        ["apy vs apr", 6900, 0, 7]
+      ]
+    },
+    "hysa_basics": {
+      "page": "/learn/what-is-a-hysa/",
+      "intent": "informational",
+      "keywords": [
+        ["what is a high yield savings account", 21000, 9, 160],
+        ["how does a high yield savings account work", 2900, 3, 170],
+        ["how do high yield savings accounts work", 2400, 0, 170],
+        ["what is high yield savings account", 2300, 9, 170],
+        ["what is hysa", 1700, 5, 150]
+      ]
+    },
+    "money_market": {
+      "page": "/learn/hysa-vs-money-market/",
+      "intent": "commercial investigation",
+      "keywords": [
+        ["money market vs high yield savings", 3400, 0, 150],
+        ["money market account vs high yield savings", 1900, 4, 130],
+        ["hysa vs money market", 1600, 5, 190]
+      ]
+    },
+    "compounding": {
+      "page": "/learn/how-hysa-compounding-works/",
+      "intent": "informational",
+      "keywords": [["compound interest savings account", 3600, 10, 200]]
+    },
+    "tax": {
+      "page": "/learn/hysa-interest-tax/",
+      "intent": "informational",
+      "keywords": [["is hysa interest taxable", null, null, null]]
+    }
+  },
+  "addressable_totals": {
+    "core_tool": 48000,
+    "cd_tools": 14500,
+    "apy_education": 132400,
+    "hysa_basics": 30300,
+    "comparison": 11700,
+    "note": "Sum of the targetable clusters above, all KD 24 or lower. Brand and listicle terms are excluded."
+  }
+}

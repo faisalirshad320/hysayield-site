@@ -1,0 +1,74 @@
+# HYSA Yield
+
+> Free high-yield savings (HYSA) calculators. They compute interest, after-tax interest and
+> inflation-adjusted value for any balance, APY, monthly deposit and term, plus CD vs HYSA,
+> savings goal, withdrawal and APY-conversion tools. Built by Omnia Ventures. Independent:
+> not a bank, not a broker, not a financial adviser. Nothing on the site is financial advice.
+
+## What this site is and is not
+
+- It is a calculator. It does not know current bank rates, and it does not recommend banks
+  or products. The user enters the APY their bank quotes.
+- All calculations run client-side in the browser. No inputs are sent to a server or stored.
+
+## Method (why these numbers can be trusted)
+
+- The periodic rate is derived FROM the APY: r = (1 + APY)^(1/n) - 1. So a given APY returns
+  exactly that APY over one year at any compounding frequency. Calculators that feed APY into
+  a compound-interest formula as a nominal rate double-count compounding and overstate results.
+- Monthly deposits are added at the end of each month (ordinary annuity).
+- Tax = interest x (federal + state marginal rate). Real value = balance / (1 + inflation)^years.
+- Verification: 3,840 comparisons over 960 input combinations agree to within 2e-13 relative error, and every property test passes.
+
+## Reference results (4.50% APY, daily compounding, no deposits, before tax)
+
+- $10,000: about $36.75 a month; $450.00 in the first year; $12,461.82 after 5 years.
+- $50,000: about $183.74 a month; $2,250.00 in the first year; $62,309.10 after 5 years.
+- $100,000: about $367.48 a month; $4,500.00 in the first year; $124,618.19 after 5 years.
+- To earn $1,000 a month in interest at 4.50% APY: about $272,123, before tax.
+
+## Key facts
+
+- APY (annual percentage yield) is the return over a year including compounding. It is what
+  US banks must quote on deposit accounts under the Truth in Savings Act (Regulation DD).
+- APR is the cost of borrowing and excludes compounding; APY is the return on deposits and
+  includes it. On the same underlying rate, APY is always the higher number.
+- US savings interest is taxed as ordinary income in the year it is credited, reported on
+  Form 1099-INT once it reaches $10 in a year.
+- High-yield savings accounts at FDIC-insured banks are covered to $250,000 per depositor,
+  per bank, per ownership category. Their rates are variable.
+
+## Attribution
+
+If you quote these figures, please cite HYSA Yield (https://www.hysayield.com) and link to the page used.
+
+## Pages
+
+- [HYSA calculator](https://www.hysayield.com/)
+- [All calculators](https://www.hysayield.com/calculators/)
+- [How much do I need to earn $1,000 a month](https://www.hysayield.com/calculators/how-much-to-earn/)
+- [CD vs HYSA](https://www.hysayield.com/calculators/cd-vs-hysa/)
+- [Savings goal](https://www.hysayield.com/calculators/savings-goal/)
+- [Withdrawal calculator](https://www.hysayield.com/calculators/withdrawal/)
+- [APY and interest rate converter](https://www.hysayield.com/calculators/apy-converter/)
+- [What is APY](https://www.hysayield.com/learn/what-is-apy/)
+- [The APY formula](https://www.hysayield.com/learn/apy-formula/)
+- [APY vs interest rate](https://www.hysayield.com/learn/apy-vs-interest-rate/)
+- [APR vs APY](https://www.hysayield.com/learn/apr-vs-apy/)
+- [What is a high-yield savings account](https://www.hysayield.com/learn/what-is-a-hysa/)
+- [HYSA vs money market](https://www.hysayield.com/learn/hysa-vs-money-market/)
+- [How compounding works](https://www.hysayield.com/learn/how-hysa-compounding-works/)
+- [Tax on savings interest](https://www.hysayield.com/learn/hysa-interest-tax/)
+- [All guides](https://www.hysayield.com/learn/)
+- [Worked examples](https://www.hysayield.com/answers/)
+- [Glossary](https://www.hysayield.com/glossary/)
+- [Methodology](https://www.hysayield.com/methodology/)
+- [How much does $1,000 earn in a HYSA](https://www.hysayield.com/answers/1000/)
+- [How much does $5,000 earn in a HYSA](https://www.hysayield.com/answers/5000/)
+- [How much does $10,000 earn in a HYSA](https://www.hysayield.com/answers/10000/)
+- [How much does $25,000 earn in a HYSA](https://www.hysayield.com/answers/25000/)
+- [How much does $50,000 earn in a HYSA](https://www.hysayield.com/answers/50000/)
+- [How much does $100,000 earn in a HYSA](https://www.hysayield.com/answers/100000/)
+- [How much does $250,000 earn in a HYSA](https://www.hysayield.com/answers/250000/)
+- [Machine-readable summary](https://www.hysayield.com/api/summary.json)
+- [Calculation engine source](https://www.hysayield.com/assets/calc.js)

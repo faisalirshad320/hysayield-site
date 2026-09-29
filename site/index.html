@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HYSA Calculator: What Your High-Yield Savings Really Earns</title>
+<meta name="description" content="Free high-yield savings calculator. See interest, after-tax return and inflation-adjusted value for any APY, with a month-by-month schedule you can download.">
+<link rel="canonical" href="https://www.hysayield.com/">
+<meta name="theme-color" content="#0f6b4f">
+<meta property="og:type" content="website"><meta property="og:site_name" content="HYSA Yield">
+<meta property="og:title" content="HYSA Calculator: What Your High-Yield Savings Really Earns"><meta property="og:description" content="Free high-yield savings calculator. See interest, after-tax return and inflation-adjusted value for any APY, with a month-by-month schedule you can download.">
+<meta property="og:url" content="https://www.hysayield.com/"><meta property="og:image" content="https://www.hysayield.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="alternate" type="application/json" href="/api/summary.json" title="Machine-readable summary">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
+<style>:root{--ink:#10241c;--muted:#4b6158;--bg:#f4f8f5;--card:#fff;--line:#d7e3dc;--accent:#0f6b4f;
+--accent-ink:#fff;--warn:#fff6e0;--warn-ink:#5a4300;--pos:#0f6b4f;--neg:#a63a22;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--ink:#e6efea;--muted:#9fb3aa;
+--bg:#0b1613;--card:#132420;--line:#24403a;--accent:#63c79e;--accent-ink:#06120e;--warn:#3a2f10;
+--warn-ink:#f6dd9a;--pos:#63c79e;--neg:#ec8b72;color-scheme:dark}}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+a{color:var(--accent)}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:780px;margin:0 auto;padding:0 16px}
+header.top{border-bottom:1px solid var(--line);background:var(--card)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:56px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--ink);text-decoration:none;letter-spacing:-.01em}
+.brand svg{width:22px;height:22px}
+nav.main a{color:var(--muted);text-decoration:none;margin-left:14px;font-size:15px;display:inline-block;padding:10px 0}
+nav.main a:hover{color:var(--ink)}
+main{padding:26px 0 48px}
+h1{font-size:clamp(28px,5.5vw,40px);line-height:1.12;letter-spacing:-.02em;margin:0 0 10px}
+h2{font-size:23px;letter-spacing:-.01em;margin:38px 0 10px}h3{font-size:18px;margin:24px 0 6px}
+.lede{color:var(--muted);font-size:18px;margin:0 0 20px;max-width:36em}
+.answer{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);
+border-radius:0 12px 12px 0;padding:14px 16px;margin:0 0 22px}
+.answer p{margin:0}.answer p+p{margin-top:8px}
+.tool{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.f{display:flex;flex-direction:column;gap:5px;min-width:0}
+.f.wide{grid-column:1/-1}
+label{font-weight:600;font-size:15px}
+.hint{font-size:13px;color:var(--muted)}
+input,select{font:inherit;font-size:17px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;
+background:var(--bg);color:var(--ink);min-height:48px;width:100%;min-width:0}
+input[type=number]{font-variant-numeric:tabular-nums}
+.adv{margin:14px 0 0;border-top:1px solid var(--line);padding-top:10px}
+.adv summary{font-weight:600;cursor:pointer;min-height:24px;font-size:15px}
+.adv .fields{margin-top:12px}
+.out{margin-top:18px;border-top:1px solid var(--line);padding-top:16px}
+.big{font-size:clamp(34px,8vw,52px);font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums;margin:0;line-height:1.05}
+.biglab{margin:2px 0 0;color:var(--muted);font-size:15px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:16px 0 0}
+.stat{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.stat b{display:block;font-size:21px;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.stat span{font-size:13px;color:var(--muted)}
+.verdict{margin:16px 0 0;padding:12px 14px;border-radius:10px;background:var(--bg);border:1px solid var(--line);font-weight:600}
+.chart{margin:16px 0 0}
+.chart svg{width:100%;height:auto;display:block}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 0}
+button{font:inherit;cursor:pointer}
+.go{background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:0 20px;font-weight:700;min-height:48px}
+.ghost{background:none;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:11px 14px;min-height:44px}
+.err{color:var(--neg);font-size:14px;margin:8px 0 0;min-height:1.2em}
+table{border-collapse:collapse;width:100%;font-size:15px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+td.n,th.n{text-align:right}
+th{font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.fact{font-size:20px;line-height:1.4;border-left:4px solid var(--accent);padding:4px 0 4px 14px;margin:16px 0}
+details.q{border-bottom:1px solid var(--line);padding:12px 0}
+details.q summary{font-weight:600;cursor:pointer;min-height:24px}details.q p{margin:8px 0 0}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:16px 0}
+.cards a{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;text-decoration:none;color:var(--ink)}
+.cards a:hover{border-color:var(--accent)}.cards b{display:block}.cards span{font-size:14px;color:var(--muted)}
+dl.gloss dt{font-weight:700;margin:18px 0 4px}dl.gloss dd{margin:0;color:var(--muted)}
+.related{margin:44px 0 0;border-top:1px solid var(--line);padding-top:18px}
+.related h2{margin:0 0 10px;font-size:18px}
+.related ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:8px 16px}
+.related li{margin:0}.related a{text-decoration:none}.related a:hover{text-decoration:underline}
+.disc{background:var(--warn);color:var(--warn-ink);border-radius:10px;padding:10px 14px;font-size:14px;margin:22px 0 0}
+.crumb{font-size:14px;color:var(--muted);margin:0 0 10px}.crumb a{color:var(--muted)}
+footer{border-top:1px solid var(--line);padding:24px 0 40px;font-size:14px;color:var(--muted)}
+footer a{color:var(--muted)}footer p{margin:6px 0}
+code{background:var(--card);border:1px solid var(--line);border-radius:5px;padding:1px 5px;font-size:.92em}
+.formula{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:14px 0;overflow-x:auto;font-variant-numeric:tabular-nums}
+@media (max-width:560px){.fields{grid-template-columns:1fr}.related ul{grid-template-columns:1fr}
+nav.main a{margin-left:10px}}</style>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"Organization","name":"HYSA Yield","url":"https://www.hysayield.com","logo":"https://www.hysayield.com/icon-512.png"},{"@context":"https://schema.org","@type":"WebPage","@id":"https://www.hysayield.com/#page","url":"https://www.hysayield.com/","name":"HYSA Calculator: What Your High-Yield Savings Really Earns","description":"Free high-yield savings calculator. See interest, after-tax return and inflation-adjusted value for any APY, with a month-by-month schedule you can download.","inLanguage":"en-US","dateModified":"2026-09-29","isPartOf":{"@type":"WebSite","name":"HYSA Yield","url":"https://www.hysayield.com"},"speakable":{"@type":"SpeakableSpecification","cssSelector":["#answer","h1"]}},{"@context":"https://schema.org","@type":"WebApplication","name":"HYSA Calculator","url":"https://www.hysayield.com/","applicationCategory":"FinanceApplication","operatingSystem":"Any","browserRequirements":"Requires JavaScript","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"Free high-yield savings calculator with after-tax and inflation-adjusted results."},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How much does $10,000 earn in a high-yield savings account?","acceptedAnswer":{"@type":"Answer","text":"At 4.50% APY, $10,000 left alone earns $450 in the first year and grows to $12,462 after five years. Change the APY above to match your bank \u2014 and see the full table for $10,000 at other rates."}},{"@type":"Question","name":"Does compounding daily beat compounding monthly?","acceptedAnswer":{"@type":"Answer","text":"Barely. Once a bank quotes APY, the compounding frequency is already inside that number, so two accounts at the same APY pay the same regardless of how often they compound. Frequency only matters when a bank quotes a plain interest rate instead."}},{"@type":"Question","name":"Do I pay tax on high-yield savings interest?","acceptedAnswer":{"@type":"Answer","text":"In the US, yes \u2014 savings interest is taxed as ordinary income in the year it is credited, and your bank issues a Form 1099-INT once you earn $10 or more. Enter your brackets under \"Tax and inflation\" to see the after-tax figure. More on the tax treatment."}},{"@type":"Question","name":"Is a CD better than a high-yield savings account?","acceptedAnswer":{"@type":"Answer","text":"A CD locks your rate and your money; a HYSA keeps both flexible. Which wins depends on where rates go and whether you might need the cash early. The CD vs HYSA calculator puts numbers on it, including the early-withdrawal penalty."}},{"@type":"Question","name":"Is my money safe?","acceptedAnswer":{"@type":"Answer","text":"A high-yield savings account at an FDIC-insured US bank is covered to $250,000 per depositor, per bank, per ownership category, exactly like a branch account. What is not guaranteed is the rate: every HYSA rate is variable and can drop at any time."}},{"@type":"Question","name":"Do you store what I type?","acceptedAnswer":{"@type":"Answer","text":"No. Every calculation runs in your browser. Nothing is sent to a server, there is no account, and there are no analytics or advertising cookies on the site today."}}]},{"@context":"https://schema.org","@type":"HowTo","name":"How to work out what a high-yield savings account will earn","totalTime":"PT1M","step":[{"@type":"HowToStep","position":1,"name":"Enter your balance and APY","text":"Type your current balance and the APY your bank advertises. Use APY, not the plain interest rate.","url":"https://www.hysayield.com/#answer"},{"@type":"HowToStep","position":2,"name":"Add a monthly deposit and a time horizon","text":"Enter what you add each month and how many years you plan to leave the money.","url":"https://www.hysayield.com/#answer"},{"@type":"HowToStep","position":3,"name":"Add your tax brackets","text":"Open Tax and inflation and enter your federal and state marginal rates to see the after-tax interest.","url":"https://www.hysayield.com/learn/hysa-interest-tax/"},{"@type":"HowToStep","position":4,"name":"Check the schedule","text":"Open the month-by-month table to see exactly when interest is credited, and download it as CSV.","url":"https://www.hysayield.com/methodology/"}]}]</script>
+</head>
+<body>
+<header class="top"><div class="wrap"><a class="brand" href="/"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M5 20V12"/><path d="M10 20V8"/><path d="M15 20V5"/><path d="M20 20V3"/></svg>HYSA Yield</a>
+<nav class="main" aria-label="Main"><a href="/">Calculator</a><a href="/calculators/">Tools</a><a href="/learn/">Learn</a><a href="/methodology/">Method</a></nav></div></header>
+<main class="wrap">
+<h1>HYSA Calculator</h1>
+<p class="lede">What your high-yield savings actually earns — after tax, after inflation, with the maths shown.</p>
+
+<section class="tool" data-tool="main" aria-label="High-yield savings calculator">
+<div class="fields">
+  <div class="f"><label for="principal">Starting balance</label>
+    <input id="principal" type="number" inputmode="decimal" min="0" step="100" value="10000" autocomplete="off"></div>
+  <div class="f"><label for="apy">APY</label>
+    <input id="apy" type="number" inputmode="decimal" min="0" max="25" step="0.01" value="4.50" autocomplete="off">
+    <span class="hint">The rate your bank advertises, as a percentage.</span></div>
+  <div class="f"><label for="deposit">Monthly deposit</label>
+    <input id="deposit" type="number" inputmode="decimal" min="0" step="25" value="0" autocomplete="off"></div>
+  <div class="f"><label for="years">Years</label>
+    <input id="years" type="number" inputmode="decimal" min="0.08" max="50" step="0.5" value="5" autocomplete="off"></div>
+  <div class="f wide"><label for="compounding">Compounding</label>
+    <select id="compounding">
+      <option value="daily" selected>Daily (most common)</option>
+      <option value="monthly">Monthly</option>
+      <option value="quarterly">Quarterly</option>
+      <option value="annually">Annually</option>
+    </select>
+    <span class="hint">Once APY is quoted, frequency barely moves the result — see <a href="/learn/how-hysa-compounding-works/">why</a>.</span></div>
+</div>
+<details class="adv"><summary>Tax and inflation</summary>
+<div class="fields">
+  <div class="f"><label for="fed">Federal tax rate</label>
+    <input id="fed" type="number" inputmode="decimal" min="0" max="60" step="1" value="0" autocomplete="off">
+    <span class="hint">Your marginal bracket, as a percentage.</span></div>
+  <div class="f"><label for="state">State tax rate</label>
+    <input id="state" type="number" inputmode="decimal" min="0" max="20" step="0.1" value="0" autocomplete="off"></div>
+  <div class="f wide"><label for="inflation">Inflation</label>
+    <input id="inflation" type="number" inputmode="decimal" min="0" max="20" step="0.1" value="0" autocomplete="off">
+    <span class="hint">Set this to see what the balance is worth in today's money.</span></div>
+</div></details>
+<p class="err" id="err" role="status" aria-live="polite"></p>
+<div class="out" id="out" aria-live="polite"></div>
+<div class="acts">
+  <button class="ghost" id="csv" type="button">Download schedule (CSV)</button>
+  <button class="ghost" id="share" type="button">Copy link to these numbers</button>
+</div>
+</section>
+
+<div class="answer" id="answer"><p>At <b>4.50% APY</b>, <b>$10,000</b> earns <b>$450.00</b> in the first year and reaches <b>$12,462</b> after five years, before tax.</p><p>This calculator also shows the after-tax interest, the value in today's dollars, and a month-by-month schedule you can download. It is free, needs no sign-up, and runs entirely in your browser.</p></div>
+<p class="disc"><b>Not financial advice.</b> This is a calculator, not a recommendation. Savings rates are variable and change without notice, tax treatment depends on your own situation, and the figures here are projections from the numbers you enter. <a href="/disclosures/">How this site makes money and what it is not</a>.</p>
+
+<h2>What most savings calculators get wrong</h2>
+<p class="fact">A 5% APY must return exactly 5% over a year — whatever the compounding frequency. Several calculators that rank for this search treat APY as a plain interest rate and compound it again, overstating the result.</p>
+<p>APY already includes compounding. That is the whole point of the number: it is the figure US banks are required to quote so that accounts can be compared like for like. Feeding an APY into a compound-interest formula as though it were a nominal rate double-counts, and the error grows with the balance and the term.</p>
+<p>This calculator derives the periodic rate <em>from</em> the APY, so a 5% APY returns 5.00% in a year on daily, monthly, quarterly or annual compounding. That property is tested on every build, along with 3,840 other checks against an independently written implementation. <a href="/methodology/">See the method and the test results</a>.</p>
+
+<h2>What this one does that the others don't</h2>
+<ul>
+<li><b>After-tax interest.</b> Savings interest is ordinary income. Enter your brackets and see the number you actually keep.</li>
+<li><b>Inflation-adjusted value.</b> 4.5% with 3% inflation is about 1.5% in purchasing power.</li>
+<li><b>A real schedule.</b> Month by month, downloadable as CSV, so you can check it rather than trust it.</li>
+<li><b>Nothing hidden.</b> No sign-up, no bank lead-capture form, no "see your personalised rate" interstitial. The formula is published.</li>
+</ul>
+
+<h2>Questions</h2>
+<details class="q"><summary>How much does $10,000 earn in a high-yield savings account?</summary><p>At 4.50% APY, $10,000 left alone earns <b>$450</b> in the first year and grows to <b>$12,462</b> after five years. Change the APY above to match your bank — and see the <a href="/answers/10000/">full table for $10,000</a> at other rates.</p></details><details class="q"><summary>Does compounding daily beat compounding monthly?</summary><p>Barely. Once a bank quotes APY, the compounding frequency is already inside that number, so two accounts at the same APY pay the same regardless of how often they compound. Frequency only matters when a bank quotes a plain interest rate instead.</p></details><details class="q"><summary>Do I pay tax on high-yield savings interest?</summary><p>In the US, yes — savings interest is taxed as ordinary income in the year it is credited, and your bank issues a Form 1099-INT once you earn $10 or more. Enter your brackets under "Tax and inflation" to see the after-tax figure. <a href="/learn/hysa-interest-tax/">More on the tax treatment</a>.</p></details><details class="q"><summary>Is a CD better than a high-yield savings account?</summary><p>A CD locks your rate and your money; a HYSA keeps both flexible. Which wins depends on where rates go and whether you might need the cash early. The <a href="/calculators/cd-vs-hysa/">CD vs HYSA calculator</a> puts numbers on it, including the early-withdrawal penalty.</p></details><details class="q"><summary>Is my money safe?</summary><p>A high-yield savings account at an FDIC-insured US bank is covered to $250,000 per depositor, per bank, per ownership category, exactly like a branch account. What is not guaranteed is the rate: every HYSA rate is variable and can drop at any time.</p></details><details class="q"><summary>Do you store what I type?</summary><p>No. Every calculation runs in your browser. Nothing is sent to a server, there is no account, and there are no analytics or advertising cookies on the site today.</p></details>
+<nav class="related" aria-labelledby="rel-h"><h2 id="rel-h">Related</h2><ul><li><a href="/calculators/cd-vs-hysa/">CD vs HYSA</a></li><li><a href="/calculators/how-much-to-earn/">How much do I need to earn $1,000 a month</a></li><li><a href="/learn/what-is-apy/">What is APY</a></li><li><a href="/learn/hysa-interest-tax/">Tax on savings interest</a></li><li><a href="/methodology/">Methodology</a></li><li><a href="/answers/">Worked examples</a></li></ul></nav></main>
+<footer><div class="wrap">
+<p><a href="/calculators/">Calculators</a> · <a href="/answers/">Worked examples</a> · <a href="/glossary/">Glossary</a> · <a href="/methodology/">Methodology</a> · <a href="/llms.txt">llms.txt</a></p>
+<p><a href="/about/">About</a> · <a href="/disclosures/">Disclosures</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
+<p>Calculations run entirely in your browser. Nothing you type is sent anywhere or stored.</p>
+<p>© 2026 HYSA Yield. Not financial advice.</p></div></footer>
+<script src="/assets/calc.js" defer></script><script src="/assets/app.js" defer></script>
+</body>
+</html>

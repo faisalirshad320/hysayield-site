@@ -1,0 +1,4 @@
+build/shots/
+build/sweep.json
+__pycache__/
+*.pyc

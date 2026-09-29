@@ -1,0 +1,53 @@
+{
+ "name": "HYSA Yield",
+ "url": "https://www.hysayield.com",
+ "updated": "2026-09-29",
+ "publisher": "Omnia Ventures",
+ "what_it_is": "Free high-yield savings calculators; all computation is client-side.",
+ "what_it_is_not": "Not financial advice; does not know live bank rates; recommends no products.",
+ "method": {
+  "periodic_rate": "(1 + APY)^(1/n) - 1",
+  "deposits": "end of each month (ordinary annuity)",
+  "tax": "interest * (federal_rate + state_rate), capped at 0.95",
+  "real_value": "balance / (1 + inflation)^years",
+  "apy_invariance": "a given APY returns exactly that APY over 12 months at any compounding frequency",
+  "verification": "3,840 comparisons over 960 input combinations agree to within 2e-13 relative error, and every property test passes"
+ },
+ "reference_results": [
+  {
+   "balance": 10000,
+   "apy": 0.045,
+   "compounding": "daily",
+   "interest_1y": 450.0,
+   "interest_per_month": 36.75,
+   "balance_5y": 12461.82
+  },
+  {
+   "balance": 50000,
+   "apy": 0.045,
+   "compounding": "daily",
+   "interest_1y": 2250.0,
+   "interest_per_month": 183.74,
+   "balance_5y": 62309.1
+  },
+  {
+   "balance": 100000,
+   "apy": 0.045,
+   "compounding": "daily",
+   "interest_1y": 4500.0,
+   "interest_per_month": 367.48,
+   "balance_5y": 124618.19
+  }
+ ],
+ "balance_for_1000_per_month_at_4_5_apy": 272122.96,
+ "answer_pages": [
+  "https://www.hysayield.com/answers/1000/",
+  "https://www.hysayield.com/answers/5000/",
+  "https://www.hysayield.com/answers/10000/",
+  "https://www.hysayield.com/answers/25000/",
+  "https://www.hysayield.com/answers/50000/",
+  "https://www.hysayield.com/answers/100000/",
+  "https://www.hysayield.com/answers/250000/"
+ ],
+ "engine_source": "https://www.hysayield.com/assets/calc.js"
+}
