@@ -6,10 +6,8 @@ DirectorySlash On
 ErrorDocument 404 /404.html
 <IfModule mod_rewrite.c>
 RewriteEngine On
-# Force HTTPS (Cloudways terminates TLS in front of Apache and sets HTTPS=on).
-RewriteCond %{HTTPS} !=on
-RewriteCond %{HTTP:X-Forwarded-Proto} !https
-RewriteRule ^ https://www.hysayield.com%{REQUEST_URI} [L,R=301]
+# HTTPS is enforced at the Cloudways edge (HTTPS Redirection), not here: Apache
+# cannot see the original scheme on this stack and a rule here loops.
 RewriteCond %{HTTP_HOST} ^hysayield\.com$ [NC]
 RewriteRule ^ https://www.hysayield.com%{REQUEST_URI} [L,R=301]
 # Serve /dir/ from /dir/index.html internally, so no redirect is ever issued for a clean URL.
