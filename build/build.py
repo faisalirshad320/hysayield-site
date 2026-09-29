@@ -173,6 +173,7 @@ def page(path, title, desc, body, schema=None, crumbs=None, related=True, script
 <title>{e(title)}</title>
 <meta name="description" content="{e(desc)}">
 <link rel="canonical" href="{canon}">
+<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1">
 <meta name="theme-color" content="#0f6b4f">
 <meta property="og:type" content="website"><meta property="og:site_name" content="{NAME}">
 <meta property="og:title" content="{e(title)}"><meta property="og:description" content="{e(desc)}">
@@ -672,7 +673,9 @@ def apy_converter():
 # --- learn: the informational clusters --------------------------------------
 
 def learn_page(path, title, desc, h1, lede, ans, body_html, qs, crumb):
-    body = f"<h1>{h1}</h1>\n<p class=\"lede\">{lede}</p>\n{answer_block(ans)}\n{body_html}\n"
+    body = (f"<h1>{h1}</h1>\n<p class=\"lede\">{lede}</p>\n{answer_block(ans)}\n{body_html}\n"
+            f"<p class=\"hint\">Last reviewed {dt.date.today().strftime('%B %Y')} by {NAME}. Rate figures are sourced from the FDIC and FRED "
+            f"and dated where they appear; everything else is definitional and changes rarely. <a href=\"/about/\">Who writes this</a>.</p>\n")
     if qs:
         body += f"<h2>Questions</h2>\n{faq_html(qs)}\n"
     body += DISCLAIMER
@@ -1048,8 +1051,82 @@ def learn_hub():
 
 # --- worked examples: "how much does $X earn?" ------------------------------
 
+def _answer_notes(amount):
+    """Amount-specific analysis so each worked-example page says something the others do not."""
+    nat = NAT["savings"] / 100
+    at_nat = amount * nat
+    r45 = amount * ((1.045) ** (1 / 12) - 1)
+    need1000 = R.balance_for_monthly_income(1000, 0.045)
+    if amount == 1000:
+        return ("Is it worth opening a HYSA for $1,000?", [
+            f"Honestly: the interest is small. At the FDIC national average of {NAT['savings']:.2f}% it is {money(at_nat, 2)} a year; "
+            f"at 4.50% it is {money(1000 * 0.045, 2)}. The reason to do it anyway is that a high-yield account with no minimum costs nothing, "
+            "and the habit matters more than the first year's return.",
+            "Watch for two things at this balance: a monthly fee, which would wipe out the interest entirely, and a minimum-balance "
+            "requirement to earn the headline APY. Both are common at branch banks and rare at online ones."],
+            [("Is it worth putting $1,000 in a high-yield savings account?",
+              f"Yes, if the account has no fee and no minimum — it earns about {money(1000 * 0.045, 2)} a year at 4.50% versus {money(at_nat, 2)} at the national average, and it starts the habit. A fee of even $5 a month would cost more than the interest.")])
+    if amount == 5000:
+        return ("$5,000 as a starter emergency fund", [
+            "For many households $5,000 is one to two months of essential costs, which makes it a starter emergency fund rather than a "
+            f"finished one. At 4.50% it earns {money(r45, 2)} a month — not life-changing, but it is money that would otherwise earn "
+            f"{money(at_nat / 12, 2)} a month at the national average.",
+            "The bigger lever at this size is the deposit, not the rate: adding $200 a month grows the balance faster than any APY can. "
+            "The <a href=\"/calculators/emergency-fund/\">emergency fund calculator</a> shows how long it takes to reach three or six months of cover."],
+            [("Is $5,000 enough for an emergency fund?",
+              "It depends on your essential monthly costs. Three months of essentials is a common floor; for many households that is more than $5,000, so treat it as a starting point and keep adding.")])
+    if amount == 10000:
+        return ("$10,000 is the benchmark figure", [
+            f"Banks and comparison sites quote returns on $10,000 because the maths is easy to scale: at 4.50% it earns {money(450, 2)} a year, "
+            f"so $20,000 earns $900 and $1,000 earns $45. At the FDIC national average of {NAT['savings']:.2f}% ({NAT_ASOF}), the same "
+            f"$10,000 earns {money(at_nat, 2)}.",
+            f"A 12-month CD at the national average of {NAT['cd_12m']:.2f}% would pay {money(10000 * NAT['cd_12m'] / 100, 2)}, which is why "
+            "the CD-versus-savings question is rarely settled by averages — it is settled by the specific rates you can get. See the "
+            "<a href=\"/calculators/cd-vs-hysa/\">CD vs HYSA calculator</a>."],
+            [("How much interest does $10,000 earn at the national average savings rate?",
+              f"About {money(at_nat, 2)} a year at {NAT['savings']:.2f}% APY, the FDIC national average as of {NAT_ASOF} — roughly a tenth of what a 4.50% high-yield account pays.")])
+    if amount == 25000:
+        return ("$25,000: where tax starts to matter", [
+            f"At 4.50%, $25,000 earns {money(25000 * 0.045, 2)} a year. In a 22% federal bracket with 5% state tax, "
+            f"{money(25000 * 0.045 * 0.27, 2)} of that goes in tax, leaving {money(25000 * 0.045 * 0.73, 2)}. The bank reports the full "
+            "amount on Form 1099-INT whether or not you withdraw it.",
+            "This is also the size at which many people hold more than they need in cash. If $25,000 is well above your emergency fund, "
+            "the <a href=\"/learn/how-much-to-keep-in-a-hysa/\">how much to keep in a HYSA</a> guide covers what to do with the rest."],
+            [("Do I have to pay tax on interest from $25,000 in savings?",
+              f"Yes. At 4.50% the {money(25000 * 0.045, 2)} of interest is taxed as ordinary income in the year it is credited, and the bank issues a 1099-INT. There is no threshold below which it is tax-free — the $10 figure is only the reporting cut-off.")])
+    if amount == 50000:
+        return ("$50,000 covers six months for most households", [
+            f"Six months of essential costs is a common emergency-fund target, and $50,000 covers it at up to {money(50000 / 6)} a month of "
+            f"essentials. At 4.50% the fund pays for itself in a small way: {money(50000 * 0.045, 2)} a year, or {money(r45, 2)} a month, before tax.",
+            "Above the emergency fund, the question becomes whether the money has a date attached. Money for a house deposit in two years "
+            "belongs in savings or a short CD; money with no date for a decade usually does not. "
+            "<a href=\"/learn/hysa-vs-investing/\">HYSA vs investing</a> sets out the trade."],
+            [("Is $50,000 too much to keep in a savings account?",
+              "Not if it is your emergency fund plus money you will spend within a few years. It is well under the $250,000 FDIC limit. Cash beyond those purposes loses ground to inflation after tax.")])
+    if amount == 100000:
+        return ("$100,000 and the $1,000-a-month question", [
+            f"A common target is $1,000 a month in interest. At 4.50%, $100,000 produces {money(r45, 2)} a month — about a third of the way. "
+            f"The balance that actually yields $1,000 a month at 4.50% is roughly {money(need1000)}, before tax; the "
+            "<a href=\"/calculators/how-much-to-earn/\">reverse calculator</a> works it out for any rate.",
+            f"At this size a fifth of a percentage point is real money: 4.30% versus 4.50% is {money(100000 * 0.002, 2)} a year. It is worth "
+            "moving banks for, and worth checking that the headline APY applies to the whole balance rather than a tier."],
+            [("How much do I need in a HYSA to make $1,000 a month?",
+              f"About {money(need1000)} at 4.50% APY, before tax. $100,000 makes about {money(r45, 2)} a month at that rate.")])
+    return ("$250,000 is exactly the FDIC limit", [
+        "FDIC insurance covers $250,000 per depositor, per insured bank, per ownership category. $250,000 in one individual account at "
+        "one bank is fully covered; a single dollar of interest above it is not, so the balance will exceed the limit within the first "
+        "month. Either keep the balance a little below the limit, hold the account jointly (a separate category, $500,000 for two "
+        "owners), or split across banks.",
+        f"At 4.50% the interest is {money(250000 * 0.045, 2)} a year, or {money(r45, 2)} a month. At the FDIC national average of "
+        f"{NAT['savings']:.2f}% it would be {money(at_nat, 2)} — the difference between the two is the cost of leaving a large balance "
+        "at a low-rate bank."],
+        [("Is $250,000 in a savings account fully FDIC insured?",
+          "Yes, for a single ownership category at one bank — but interest pushes it over the limit immediately. Joint accounts are insured separately ($250,000 per co-owner), and a second bank adds another $250,000 of cover.")])
+
+
 def answer_page(amount):
     path = f"/answers/{amount}/"
+    note_h2, note_paras, note_qs = _answer_notes(amount)
     head = []
     for label, months in ANSWER_HORIZONS:
         head.append(f"<th class='n'>{label}</th>")
@@ -1087,6 +1164,9 @@ def answer_page(amount):
 <li><b>The 0.50% row</b> is roughly what a standard branch savings account pays. The gap to the rows below it is the case for a high-yield account.</li>
 </ul>
 
+<h2>{note_h2}</h2>
+{"".join(f"<p>{x}</p>" for x in note_paras)}
+
 <h2>What the table leaves out</h2>
 <ul>
 <li><b>Tax,</b> charged as ordinary income each year — see <a href="/learn/hysa-interest-tax/">how savings interest is taxed</a>.</li>
@@ -1104,7 +1184,7 @@ def answer_page(amount):
           (f"How much does {a} earn per month in a high-yield savings account?",
            f"About {money(per_month, 2)} a month at 4.50% APY, before tax."),
           (f"How much will {a} be worth in 5 years in a HYSA?",
-           f"About {money(five['finalBalance'])} at a steady 4.50% APY with no further deposits. Real rates vary.")]
+           f"About {money(five['finalBalance'])} at a steady 4.50% APY with no further deposits. Real rates vary.")] + note_qs
     schema = [faq_schema(qs)]
     return page(path, f"How Much Does {a} Earn in a High-Yield Savings Account?",
                 f"At 4.50% APY, {a} earns about {money(per_month, 2)} a month and {money(one['interest'], 0)} a year. Full table of interest at 0.5% to 5% APY, from 1 month to 10 years.",
