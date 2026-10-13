@@ -1186,16 +1186,35 @@ def _answer_notes(amount):
             "moving banks for, and worth checking that the headline APY applies to the whole balance rather than a tier."],
             [("How much do I need in a HYSA to make $1,000 a month?",
               f"About {money(need1000)} at 4.50% APY, before tax. $100,000 makes about {money(r45, 2)} a month at that rate.")])
-    return ("$250,000 is exactly the FDIC limit", [
-        "FDIC insurance covers $250,000 per depositor, per insured bank, per ownership category. $250,000 in one individual account at "
-        "one bank is fully covered; a single dollar of interest above it is not, so the balance will exceed the limit within the first "
-        "month. Either keep the balance a little below the limit, hold the account jointly (a separate category, $500,000 for two "
-        "owners), or split across banks.",
-        f"At 4.50% the interest is {money(250000 * 0.045, 2)} a year, or {money(r45, 2)} a month. At the FDIC national average of "
-        f"{NAT['savings']:.2f}% it would be {money(at_nat, 2)} — the difference between the two is the cost of leaving a large balance "
-        "at a low-rate bank."],
-        [("Is $250,000 in a savings account fully FDIC insured?",
-          "Yes, for a single ownership category at one bank — but interest pushes it over the limit immediately. Joint accounts are insured separately ($250,000 per co-owner), and a second bank adds another $250,000 of cover.")])
+    if amount == 250000:
+        return ("$250,000 is exactly the FDIC limit", [
+            "FDIC insurance covers $250,000 per depositor, per insured bank, per ownership category. $250,000 in one individual account at "
+            "one bank is fully covered; a single dollar of interest above it is not, so the balance will exceed the limit within the first "
+            "month. Either keep the balance a little below the limit, hold the account jointly (a separate category, $500,000 for two "
+            "owners), or split across banks.",
+            f"At 4.50% the interest is {money(250000 * 0.045, 2)} a year, or {money(r45, 2)} a month. At the FDIC national average of "
+            f"{NAT['savings']:.2f}% it would be {money(at_nat, 2)} — the difference between the two is the cost of leaving a large balance "
+            "at a low-rate bank."],
+            [("Is $250,000 in a savings account fully FDIC insured?",
+              "Yes, for a single ownership category at one bank — but interest pushes it over the limit immediately. Joint accounts are insured separately ($250,000 per co-owner), and a second bank adds another $250,000 of cover.")])
+
+    # Generic, amount-scaled fallback for every other balance. Every figure is
+    # computed from `amount`, so nothing is hardcoded to a single balance.
+    yr45 = amount * 0.045
+    gap = amount * 0.002   # 4.30% vs 4.50%
+    fdic_note = (
+        " This balance sits within the $250,000 FDIC limit per depositor, per bank, per ownership category, so it is fully insured at one bank."
+        if amount < 250000 else
+        f" This balance is above the $250,000 FDIC limit per depositor, per bank, so about {money(amount - 250000)} would be uninsured at a single bank — "
+        "spreading it across banks or ownership categories restores full cover."
+    )
+    return (f"What {money(amount)} earns, and what to watch", [
+        f"At 4.50% APY, {money(amount)} earns {money(yr45, 2)} in the first year, or about {money(r45, 2)} a month. At the FDIC national average of "
+        f"{NAT['savings']:.2f}% the same balance earns only {money(at_nat, 2)} a year — the gap between the two is the real cost of leaving the money at a low-rate bank.",
+        f"At this balance a fifth of a percentage point matters: 4.30% versus 4.50% is {money(gap, 2)} a year on {money(amount)}. Check that the headline APY applies to the whole "
+        f"balance rather than a tier, and that no monthly fee eats into the interest.{fdic_note}"],
+        [(f"How much does {money(amount)} earn in a high-yield savings account?",
+          f"About {money(yr45, 2)} a year at 4.50% APY, or roughly {money(r45, 2)} a month, before tax. At the {NAT['savings']:.2f}% national average it is about {money(at_nat, 2)} a year.")])
 
 
 def answer_page(amount):
