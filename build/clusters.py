@@ -289,7 +289,10 @@ LINKS = {
 # --- 2. Worked-example pages ("how much does $X earn?") ---------------------
 # Each renders a computed matrix, so no two pages carry the same numbers.
 
-ANSWER_AMOUNTS = [1000, 5000, 10000, 25000, 50000, 100000, 250000]
+ANSWER_AMOUNTS = [500, 1000, 2000, 2500, 3000, 4000, 5000, 6000, 7500, 8000,
+                  10000, 15000, 20000, 25000, 30000, 35000, 40000, 50000,
+                  60000, 70000, 75000, 80000, 90000, 100000, 150000, 200000,
+                  250000, 300000, 500000, 750000, 1000000]
 ANSWER_APYS = [0.005, 0.02, 0.035, 0.04, 0.045, 0.05]
 ANSWER_HORIZONS = [("1 month", 1), ("6 months", 6), ("1 year", 12),
                    ("2 years", 24), ("5 years", 60), ("10 years", 120)]

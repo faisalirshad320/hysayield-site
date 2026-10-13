@@ -280,10 +280,12 @@ def sweep2():
 
 
 if __name__ == "__main__":
+    import pathlib as _pl
+    _HERE = _pl.Path(__file__).resolve().parent
     good = _self_test()
-    with open("/home/claude/hysa/build/sweep2.json", "w") as f:
+    with open(_HERE / "sweep2.json", "w") as f:
         json.dump(sweep2(), f)
-    with open("/home/claude/hysa/build/sweep.json", "w") as f:
+    with open(_HERE / "sweep.json", "w") as f:
         json.dump(sweep(), f)
     print(f"wrote sweep.json ({len(sweep())} cases)")
     raise SystemExit(0 if good else 1)
