@@ -190,7 +190,7 @@ def page(path, title, desc, body, schema=None, crumbs=None, related=True, script
 <nav class="main" aria-label="Main"><a href="/">Calculator</a><a href="/calculators/">Tools</a><a href="/learn/">Learn</a><a href="/rates/">Rates</a></nav></div></header>
 <main class="wrap">{crumb_html}{body}</main>
 <footer><div class="wrap">
-<p><a href="/calculators/">Calculators</a> · <a href="/answers/">Worked examples</a> · <a href="/rates/">Rates data</a> · <a href="/glossary/">Glossary</a> · <a href="/methodology/">Methodology</a> · <a href="/llms.txt">llms.txt</a></p>
+<p><a href="/calculators/">Calculators</a> · <a href="/answers/">Worked examples</a> · <a href="/cd-rates/">CD rates</a> · <a href="/rates/">Rates data</a> · <a href="/glossary/">Glossary</a> · <a href="/methodology/">Methodology</a> · <a href="/llms.txt">llms.txt</a></p>
 <p><a href="/about/">About</a> · <a href="/disclosures/">Disclosures</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
 <p>Calculations run entirely in your browser. Nothing you type is sent anywhere or stored.</p>
 <p>© {YEAR} {NAME}. Not financial advice.</p></div></footer>
@@ -1533,6 +1533,11 @@ If you quote these figures, please cite {NAME} ({URL}) and link to the page used
 
 {chr(10).join(f"- [{NAV_LABEL.get(p, p)}]({URL}{p})" for p in pages if p in NAV_LABEL)}
 {chr(10).join(f"- [How much does ${a:,} earn in a HYSA]({URL}/answers/{a}/)" for a in ANSWER_AMOUNTS)}
+
+## CD rates by term (FDIC national averages)
+
+- [CD rates by term]({URL}/cd-rates/): national average APY for every term, with $10,000 earnings.
+{chr(10).join(f"- [{t[1]} CD rates]({URL}/cd-rates/{t[0]}/): national average {NAT[t[3]]:.2f}% APY as of {NAT_ASOF}." for t in CD_TERMS)}
 - [Machine-readable summary]({URL}/api/summary.json)
 - [Calculation engine source]({URL}/assets/calc.js)
 """
@@ -2389,6 +2394,151 @@ def learn_how_much_in_hysa():
         "How much to keep in a HYSA")
 
 
+# ---------------------------------------------------------------- CD rates by term
+# Every rate shown is the FDIC national average from data/fdic_national_rates_*.json.
+# Earnings are computed by the verified engine (R.project, APY-based). The higher
+# "example APYs" are labelled as illustrations, never as offers from a bank.
+CD_TERMS = [  # (slug, label, months, fdic key)
+    ("3-month", "3-month", 3, "cd_3m"), ("6-month", "6-month", 6, "cd_6m"),
+    ("1-year", "1-year", 12, "cd_12m"), ("2-year", "2-year", 24, "cd_24m"),
+    ("3-year", "3-year", 36, "cd_36m"), ("4-year", "4-year", 48, "cd_48m"),
+    ("5-year", "5-year", 60, "cd_60m"),
+]
+CD_EXAMPLE_APYS = [0.035, 0.04, 0.045]
+CD_AMOUNTS = [1000, 5000, 10000, 25000, 50000, 100000]
+
+def _cd_earn(amount, apy, months):
+    return R.project(amount, apy, "daily", 0, months)["interest"]
+
+def cd_rate_page(slug, label, months, key):
+    path = f"/cd-rates/{slug}/"
+    nat = NAT[key] / 100
+    best_key = max((k for k in NAT if k.startswith("cd_")), key=lambda k: NAT[k])
+    top = [t for t in CD_TERMS if t[3] == best_key][0]
+    yrs = months / 12
+    term_word = f"{months} months" if months < 12 else (f"{int(yrs)} year" + ("s" if yrs > 1 else ""))
+    n10 = _cd_earn(10000, nat, months)
+    e45 = _cd_earn(10000, 0.045, months)
+    sav = _cd_earn(10000, NAT["savings"] / 100, months)
+
+    head = "".join(f"<th class='n'>{money(a)}</th>" for a in CD_AMOUNTS)
+    rows = [f"<tr><td>{pct(nat)} <span class='muted'>(national average)</span></td>" +
+            "".join(f"<td class='n'>{money(_cd_earn(a, nat, months), 2)}</td>" for a in CD_AMOUNTS) + "</tr>"]
+    for apy in CD_EXAMPLE_APYS:
+        rows.append(f"<tr><td>{pct(apy)} <span class='muted'>(example)</span></td>" +
+                    "".join(f"<td class='n'>{money(_cd_earn(a, apy, months), 2)}</td>" for a in CD_AMOUNTS) + "</tr>")
+
+    curve = "".join(
+        f"<tr{' class=\"hi\"' if t[3] == key else ''}><td><a href=\"/cd-rates/{t[0]}/\">{t[1]} CD</a></td>"
+        f"<td class='n'>{NAT[t[3]]:.2f}%</td></tr>" for t in CD_TERMS)
+
+    vs_12 = NAT[key] - NAT["cd_12m"]
+    if key == "cd_12m":
+        curve_note = (f"The 1-year CD has the highest national average of any term right now ({NAT['cd_12m']:.2f}%). "
+                      "Longer CDs pay less, an inverted curve that usually means banks expect rates to fall.")
+    elif months > 12:
+        curve_note = (f"A {label} CD currently averages {abs(vs_12):.2f} percentage points "
+                      f"{'less' if vs_12 < 0 else 'more'} than a 1-year CD ({NAT['cd_12m']:.2f}%). "
+                      + ("Locking up money for longer is not being rewarded at the national-average level, so a longer term "
+                         "only makes sense if you find a rate well above the average or want to lock today's rate in case rates fall."
+                         if vs_12 < 0 else "Longer terms are being rewarded, which is the normal shape of the curve."))
+    else:
+        curve_note = (f"A {label} CD averages {NAT[key]:.2f}%, below the {NAT['cd_12m']:.2f}% on a 1-year CD. "
+                      "Short CDs trade a lower rate for getting your money back sooner.")
+
+    a = "$10,000"
+    ans = answer_block([
+        f"The national average rate on a <b>{label} CD</b> is <b>{NAT[key]:.2f}%</b> (FDIC, {NAT_ASOF}). "
+        f"At that rate {a} earns <b>{money(n10, 2)}</b> over {term_word}.",
+        f"Competitive online banks usually pay well above the national average. At an example 4.50% APY the same "
+        f"{a} would earn {money(e45, 2)} over {term_word} — {money(e45 - n10, 2)} more. Check the rate your bank actually "
+        f"quotes in the <a href=\"/calculators/cd-calculator/\">CD calculator</a>.",
+    ])
+    body = f"""
+<h1>{label} CD rates</h1>
+<p class="lede">The national average {label} CD rate, what it earns on common balances, and how it compares with other terms.</p>
+{ans}
+<dl class="kv"><dt>National average, {label} CD</dt><dd>{NAT[key]:.2f}% APY</dd>
+<dt>Term</dt><dd>{term_word}</dd>
+<dt>Highest-paying term right now</dt><dd><a href="/cd-rates/{top[0]}/">{top[1]} CD</a> at {NAT[best_key]:.2f}%</dd>
+<dt>Rate data as of</dt><dd>{NAT_ASOF}</dd></dl>
+
+<h2>What a {label} CD earns</h2>
+<div class="tw"><table><thead><tr><th>APY</th>{head}</tr></thead><tbody>{"".join(rows)}</tbody></table></div>
+<p>Interest at maturity, before tax, held for the full {term_word}. The first row uses the FDIC national average. The other
+rows are <b>example rates</b> to show what a higher-paying CD is worth; they are not offers from any bank.</p>
+
+<h2>{label} CD vs other terms</h2>
+<p>{curve_note}</p>
+<div class="tw"><table><thead><tr><th>CD term</th><th class='n'>National average APY</th></tr></thead><tbody>{curve}</tbody></table></div>
+
+<h2>{label} CD vs a high-yield savings account</h2>
+<p>The national average savings rate is {NAT['savings']:.2f}%, so {a} in an average savings account would earn about
+{money(sav, 2)} over the same {term_word}. A high-yield savings account usually pays far more than that, and you can
+withdraw at any time; a CD pays a fixed rate but charges a penalty for early withdrawal. If your HYSA rate is close to
+the CD rate, the flexibility usually wins. The <a href="/calculators/cd-vs-hysa/">CD vs HYSA calculator</a> works out
+which pays more after a rate change, and the <a href="/calculators/cd-calculator/">CD calculator</a> shows the month an
+early-withdrawal penalty stops eating your interest.</p>
+
+<h2>Before you lock in</h2>
+<ul>
+<li><b>Early-withdrawal penalties</b> are set by each bank, usually as some months of interest. Read the terms before you open.</li>
+<li><b>FDIC or NCUA insurance</b> covers CDs up to $250,000 per depositor, per bank, per ownership category.</li>
+<li><b>Interest is taxable</b> in the year it is credited, even if the CD has not matured — see <a href="/learn/hysa-interest-tax/">how savings interest is taxed</a>.</li>
+<li><b>Laddering</b> spreads money across several terms so part of it matures every year — try the <a href="/calculators/cd-ladder/">CD ladder calculator</a>.</li>
+</ul>
+<p class="disc">Rates: {FDIC_LINK}, deposit-weighted national averages as of {NAT_ASOF}. Averages blend the $10,000 and
+$100,000 tiers across insured banks and credit unions.</p>
+{DISCLAIMER}
+"""
+    others = [t for t in CD_TERMS if t[0] != slug]
+    body += ('<nav class="related" aria-label="Other CD terms"><h2>Other CD terms</h2><ul>' +
+             "".join(f'<li><a href="/cd-rates/{t[0]}/">{t[1]} CD rates</a></li>' for t in others) +
+             '<li><a href="/cd-rates/">All CD rates</a></li></ul></nav>')
+    qs = [(f"What is the average {label} CD rate?",
+           f"{NAT[key]:.2f}% APY, the FDIC national average as of {NAT_ASOF}. Online banks often pay considerably more."),
+          (f"How much does {a} earn in a {label} CD?",
+           f"About {money(n10, 2)} at the {NAT[key]:.2f}% national average, or {money(e45, 2)} at an example 4.50% APY, before tax."),
+          (f"Is a {label} CD worth it?",
+           f"It pays a fixed rate for {term_word}. If a high-yield savings account pays a similar rate, the savings account "
+           "is usually better because you can withdraw without a penalty.")]
+    return page(path, f"{label} CD Rates: National Average and What $10,000 Earns",
+                f"The national average {label} CD rate is {NAT[key]:.2f}% APY (FDIC). See what $1,000 to $100,000 earns and how {label} compares with other CD terms.",
+                body, [faq_schema(qs)], crumbs=[("Home", "/"), ("CD rates", "/cd-rates/"), (f"{label} CD", path)], related=False)
+
+
+def cd_rates_hub():
+    path = "/cd-rates/"
+    best_key = max((k for k in NAT if k.startswith("cd_")), key=lambda k: NAT[k])
+    top = [t for t in CD_TERMS if t[3] == best_key][0]
+    cards = "".join(
+        f'<a href="/cd-rates/{t[0]}/"><b>{t[1]} CD</b><span>{NAT[t[3]]:.2f}% national average · '
+        f'{money(_cd_earn(10000, NAT[t[3]] / 100, t[2]), 0)} on $10,000</span></a>' for t in CD_TERMS)
+    ans = answer_block(
+        f"National average CD rates run from {min(NAT[t[3]] for t in CD_TERMS):.2f}% to {NAT[best_key]:.2f}% APY "
+        f"(FDIC, {NAT_ASOF}). The <b>{top[1]} CD</b> currently pays the most. Money market accounts average "
+        f"{NAT['money_market']:.2f}% and savings accounts {NAT['savings']:.2f}%.")
+    body = f"""
+<h1>CD rates by term</h1>
+<p class="lede">National average CD rates for every common term, with what each earns on $10,000.</p>
+{ans}
+<div class="cards">{cards}</div>
+<h2>Why longer CDs pay less right now</h2>
+<p>Normally a longer lock-up earns a higher rate. When longer terms pay less than shorter ones, the curve is "inverted",
+which usually means banks expect interest rates to fall. It makes short CDs and high-yield savings comparatively
+attractive, and long CDs worth it only if you find a rate well above the national average.</p>
+<p>To compare a specific CD with your savings account, use the <a href="/calculators/cd-vs-hysa/">CD vs HYSA calculator</a>.</p>
+<p class="disc">Rates: {FDIC_LINK} as of {NAT_ASOF}.</p>
+{DISCLAIMER}
+"""
+    qs = [("What is the average CD rate?",
+           f"Between {min(NAT[t[3]] for t in CD_TERMS):.2f}% and {NAT[best_key]:.2f}% APY depending on term (FDIC national averages, {NAT_ASOF})."),
+          ("Which CD term pays the most?", f"The {top[1]} CD, at a {NAT[best_key]:.2f}% national average.")]
+    return page(path, "CD Rates by Term: National Averages for 3 Months to 5 Years",
+                f"National average CD rates by term from the FDIC: {min(NAT[t[3]] for t in CD_TERMS):.2f}% to {NAT[best_key]:.2f}% APY, with what each term earns on $10,000.",
+                body, [faq_schema(qs)], crumbs=[("Home", "/"), ("CD rates", path)], related=False)
+
+
 if __name__ == "__main__":
     note = parity_summary()
     PARITY_N = re.search(r"^(\S+) comparisons", note).group(1)
@@ -2404,6 +2554,7 @@ if __name__ == "__main__":
              learn_can_withdraw(), learn_hysa_vs_investing(), learn_how_much_in_hysa(),
              learn_hub(), rates_page(), answers_hub()]
     paths += [answer_page(a) for a in ANSWER_AMOUNTS]
+    paths += [cd_rates_hub()] + [cd_rate_page(*t) for t in CD_TERMS]
     paths += [glossary(), methodology(note)]
     static_pages()
     paths += ["/about/", "/disclosures/", "/privacy/", "/terms/"]

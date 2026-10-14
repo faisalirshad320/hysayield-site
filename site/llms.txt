@@ -117,5 +117,16 @@ If you quote these figures, please cite HYSA Yield (https://www.hysayield.com) a
 - [How much does $500,000 earn in a HYSA](https://www.hysayield.com/answers/500000/)
 - [How much does $750,000 earn in a HYSA](https://www.hysayield.com/answers/750000/)
 - [How much does $1,000,000 earn in a HYSA](https://www.hysayield.com/answers/1000000/)
+
+## CD rates by term (FDIC national averages)
+
+- [CD rates by term](https://www.hysayield.com/cd-rates/): national average APY for every term, with $10,000 earnings.
+- [3-month CD rates](https://www.hysayield.com/cd-rates/3-month/): national average 1.13% APY as of September 21, 2026.
+- [6-month CD rates](https://www.hysayield.com/cd-rates/6-month/): national average 1.41% APY as of September 21, 2026.
+- [1-year CD rates](https://www.hysayield.com/cd-rates/1-year/): national average 1.73% APY as of September 21, 2026.
+- [2-year CD rates](https://www.hysayield.com/cd-rates/2-year/): national average 1.61% APY as of September 21, 2026.
+- [3-year CD rates](https://www.hysayield.com/cd-rates/3-year/): national average 1.36% APY as of September 21, 2026.
+- [4-year CD rates](https://www.hysayield.com/cd-rates/4-year/): national average 1.28% APY as of September 21, 2026.
+- [5-year CD rates](https://www.hysayield.com/cd-rates/5-year/): national average 1.38% APY as of September 21, 2026.
 - [Machine-readable summary](https://www.hysayield.com/api/summary.json)
 - [Calculation engine source](https://www.hysayield.com/assets/calc.js)
